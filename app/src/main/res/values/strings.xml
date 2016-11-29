@@ -30,7 +30,7 @@
 
     <!-- For Facebook SDK -->
     <string name="facebook_app_id">163987540740548</string>
-    <string name="fb_login_protocol_scheme">163987540740548</string>
+    <string name="fb_login_protocol_scheme">fb163987540740548</string>
 
     <string-array name="repeat_list">
         <item>Days</item>
