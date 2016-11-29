@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1"
+    android:paddingTop="1dp"
+    android:background="@color/app_background">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/new_wizard_1step_receiver_list"
+        android:layout_margin="3dp">
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <ListView
+            android:layout_width="250dp"
+            android:layout_height="50dp"
+            android:id="@+id/new_wizard_1step_contact_listview"
+            tools:listitem="@layout/list_item_contact"
+            android:layout_marginBottom="5dp" />
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:id="@+id/contacts_category"
+            android:spinnerMode="dialog"
+            android:layout_marginLeft="5dp"
+            android:entries="@array/contact_categories" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:ems="10"
+            android:id="@+id/new_wizard_1step_contact_phone"
+            android:hint="Number or Name"
+            android:layout_marginRight="50dp" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/new_wizard_1step_contact_phone_add"
+            android:layout_marginLeft="-40dp"
+            android:src="@drawable/add_number_selector"
+            android:background="@android:color/transparent" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Message"
+        android:id="@+id/lblMessage"
+        android:background="@color/subtopic_back"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical">
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="61dp"
+            android:id="@+id/new_wizard_1step_contact_message"
+            android:layout_gravity="center_horizontal" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Date / Time"
+        android:id="@+id/lblDateTime"
+        android:background="@color/subtopic_back"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:textStyle="bold"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="yyyy-MM-DD"
+            android:id="@+id/new_wizard_1step_contact_sendDate"
+            android:layout_marginRight="158dp"
+            android:layout_gravity="center_vertical"
+            android:textSize="18dp"
+            android:paddingLeft="10dp" />
+
+        <ImageButton
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/new_wizard_1step_contact_sendDate_btn"
+            android:layout_marginLeft="-60dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/calendar"
+            android:background="@android:color/transparent" />
+
+    </LinearLayout>
+
+        <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical">
+
+            <TimePicker android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/new_wizard_1step_contact_time"
+            android:layout_marginLeft="5dp"
+            android:layout_gravity="center"
+            android:timePickerMode="spinner"
+            />
+
+            <NumberPicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="15dp"
+            android:id="@+id/new_wizard_1step_contact_numMin" />
+
+        </LinearLayout>
+
+</LinearLayout>

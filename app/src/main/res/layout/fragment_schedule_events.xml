@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="1">
+
+    <ToggleButton
+        android:layout_width="wrap_content"
+        android:layout_weight="0.2"
+        android:layout_height="match_parent"
+        android:id="@+id/btnEvents1"
+        android:textAllCaps="false"
+        android:textOff="Out"
+        android:textOn="Out"
+        android:checked="true" />
+
+    <ToggleButton
+        android:layout_width="wrap_content"
+        android:layout_weight="0.2"
+        android:layout_height="match_parent"
+        android:id="@+id/btnEvents2"
+        android:textAllCaps="false"
+        android:textOff="Apt"
+        android:textOn="Apt" />
+
+    <ToggleButton
+        android:layout_width="wrap_content"
+        android:layout_weight="0.2"
+        android:layout_height="match_parent"
+        android:id="@+id/btnEvents3"
+        android:textAllCaps="false"
+        android:textOff="Maint"
+        android:textOn="Maint" />
+
+    <ToggleButton
+        android:layout_width="wrap_content"
+        android:layout_weight="0.2"
+        android:layout_height="match_parent"
+        android:id="@+id/btnEvents4"
+        android:textAllCaps="false"
+        android:textOff="Financ"
+        android:textOn="Financ" />
+
+    <ToggleButton
+        android:layout_width="wrap_content"
+        android:layout_weight="0.2"
+        android:layout_height="match_parent"
+        android:id="@+id/btnEvents5"
+        android:textAllCaps="false"
+        android:textOff="BdHoli"
+        android:textOn="BdHoli" />
+
+</LinearLayout>
+
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/schedule_list"
+        android:choiceMode="singleChoice"
+        tools:listitem="@layout/list_item_schedule"
+        android:background="@color/app_background" />
+</LinearLayout>
