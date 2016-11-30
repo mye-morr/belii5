@@ -68,7 +68,7 @@ public class SchedulePopulator {
     protected DatabaseHelper databaseHelper;
     protected Calendar calSimulate;
 
-    protected volatile PlayerTask objCurPlayerTask;
+    //protected volatile PlayerTask objCurPlayerTask;
     private DynaArray dynaArray = new DynaArray();
 
     private static DateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -124,7 +124,7 @@ public class SchedulePopulator {
             setup_new_player(rootView);
         }
         else if(category.equals("player")) {
-            setup_player(rootView);
+            //setup_player(rootView);
         }
     }
 
@@ -1019,6 +1019,7 @@ public class SchedulePopulator {
         });
     }
 
+    /*
     public void setup_player(final View rootView) {
         final List<NonSched> listPlayer = (List<NonSched>) (List<?>) nonSchedHelper.findBy("cat","player");
 
@@ -1117,6 +1118,7 @@ public class SchedulePopulator {
             }
         });
     }
+    */
 
     private Calendar stringToDate(String sInput) {
 
@@ -1185,6 +1187,7 @@ public class SchedulePopulator {
     //////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////
 
+    /*
     private class PlayerTask extends AsyncTask<Void, Void, Integer> {
         private String[] sxItems;
         private Integer[] ixRandIdx;
@@ -1362,4 +1365,5 @@ public class SchedulePopulator {
         Collections.shuffle(list);
         return list.toArray(new Integer[list.size()]);
     }
+    */
 }

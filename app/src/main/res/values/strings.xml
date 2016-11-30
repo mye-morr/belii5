@@ -32,6 +32,18 @@
     <string name="facebook_app_id">163987540740548</string>
     <string name="fb_login_protocol_scheme">fb163987540740548</string>
 
+    <string-array name="navigation_drawer_items_array">
+        <item>Events</item>
+        <item>Contacts</item>
+        <item>History</item>
+        <item>Fb Integrate</item>
+        <item>Games</item>
+        <item>Library</item>
+        <item>New Player</item>
+        <item>Player</item>
+        <item>On Track</item>
+    </string-array>
+
     <string-array name="repeat_list">
         <item>Days</item>
         <item>Weeks</item>
