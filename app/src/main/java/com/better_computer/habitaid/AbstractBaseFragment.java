@@ -1,14 +1,20 @@
 package com.better_computer.habitaid;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.MenuItem;
 
+import com.better_computer.habitaid.data.SearchEntry;
 import com.better_computer.habitaid.form.NewWizardDialog;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by tedwei on 11/30/16.
@@ -45,10 +51,7 @@ abstract public class AbstractBaseFragment extends Fragment {
                 ((MainActivity)context).getHistoryPopulator().setupClearHistory();
                 return true;
             case R.id.action_refresh:
-                ((MainActivity)context).getSchedulePopulator().resetup();
-                return true;
-            case R.id.action_clear_games:
-                ((MainActivity)context).getSchedulePopulator().setupClearGames();
+                ((MainActivity)context).resetup();
                 return true;
             case R.id.action_library_new:
                 new NewWizardDialog(context, "library").show();
@@ -75,4 +78,5 @@ abstract public class AbstractBaseFragment extends Fragment {
 
         super.onActivityResult(requestCode, resultCode, data);
     }
+
 }

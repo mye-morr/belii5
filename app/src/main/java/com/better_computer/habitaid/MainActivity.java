@@ -11,8 +11,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -20,7 +18,6 @@ import android.widget.ListView;
 import com.better_computer.habitaid.data.DatabaseHelper;
 import com.better_computer.habitaid.data.core.ContactItemHelper;
 import com.better_computer.habitaid.form.history.HistoryPopulator;
-import com.better_computer.habitaid.form.schedule.SchedulePopulator;
 import com.better_computer.habitaid.navigation.DrawerAdapter;
 import com.better_computer.habitaid.navigation.DrawerItem;
 import com.better_computer.habitaid.scheduler.SchedulerService;
@@ -37,18 +34,15 @@ public class MainActivity extends AppCompatActivity {
 
     //populators
     private HistoryPopulator historyPopulator;
-    private SchedulePopulator schedulePopulator;
 
     public String sSelectedLibraryCat = "";
     public String sSelectedLibrarySubcat = "";
     public String sSelectedPlayerCat = "";
     public String sSelectedPlayerSubcat = "";
+    private int iLastPosition = 0;
 
     public HistoryPopulator getHistoryPopulator() {
         return historyPopulator;
-    }
-    public SchedulePopulator getSchedulePopulator() {
-        return schedulePopulator;
     }
 
     private boolean isServiceRunning(Class<?> serviceClass) {
@@ -76,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         historyPopulator = new HistoryPopulator(this);
-        schedulePopulator = new SchedulePopulator(this);
 
         DatabaseHelper.getInstance().getHelper(ContactItemHelper.class).fetchAndUpdate();
 
@@ -114,53 +107,14 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            iLastPosition = position;
             selectItem(position);
         }
     }
 
-/*
-                case PAGE_EVENTS:
-                    rootView = inflater.inflate(R.layout.fragment_schedule_events, container, false);
-                    ((MainActivity) context).getSchedulePopulator().setup(rootView, "events");
-                    break;
-                case PAGE_CONTACTS:
-                    rootView = inflater.inflate(R.layout.fragment_schedule_contacts, container, false);
-                    ((MainActivity) context).getSchedulePopulator().setup(rootView, "contacts");
-                    break;
-                case PAGE_HISTORY:
-                    rootView = inflater.inflate(R.layout.fragment_overview, container, false);
-                    ((MainActivity) context).getHistoryPopulator().setup(rootView, "history");
-                    break;
-                case PAGE_FB_INTEGRATE:
-                    rootView = inflater.inflate(R.layout.fragment_fb_integrate, container, false);
-                    ((MainActivity) context).getSchedulePopulator().setup(rootView, "fb_integrate");
-                    break;
-                case PAGE_GAMES:
-                    rootView = inflater.inflate(R.layout.fragment_schedule, container, false);
-                    ((MainActivity) context).getSchedulePopulator().setup(rootView, "games");
-                    break;
-                case PAGE_LIBRARY:
-                    rootView = inflater.inflate(R.layout.fragment_schedule_library, container, false);
-                    ((MainActivity) context).getSchedulePopulator().setup(rootView, "library");
-                    break;
-                case PAGE_NEW_PLAYER:
-                    rootView = inflater.inflate(R.layout.fragment_schedule_new_player, container, false);
-                    ((MainActivity) context).getSchedulePopulator().setup(rootView, "new_player");
-                    break;
-                case PAGE_PLAYER:
-                    rootView = inflater.inflate(R.layout.fragment_schedule_old_player, container, false);
-                    ((MainActivity) context).getSchedulePopulator().setup(rootView, "player");
-                    break;
-                case PAGE_ONTRACK:
-                    rootView = inflater.inflate(R.layout.fragment_schedule_ontrack, container, false);
-                    ((MainActivity) context).getSchedulePopulator().setup(rootView, "ontrack");
-                    break;
-                case PAGE_SETTING:
-                    ((MainActivity)context).startSettingsActivity();
-                    ((MainActivity)context).currentPage = -1;
-                    break;
-            }
-*/
+    public void resetup() {
+        selectItem(iLastPosition);
+    }
 
     private void selectItem(int position) {
 

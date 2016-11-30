@@ -180,20 +180,20 @@ public class FragmentContacts extends AbstractBaseFragment {
                         } else if (options[i].equalsIgnoreCase("DELETE")) {
                             Toast.makeText(context, "Schedule deleted.", Toast.LENGTH_SHORT).show();
                             scheduleHelper.delete(schedule.get_id());
-                            ((MainActivity) context).getSchedulePopulator().resetup();
+                            ((MainActivity) context).resetup();
                             dialogInterface.dismiss();
                         } else if (options[i].equalsIgnoreCase("ACTIVATE")) {
                             schedule.set_state("active");
                             //fix - Multiple duplication of schedules Start
                             scheduleHelper.update(schedule);
                             //fix - Multiple duplication of schedules End
-                            ((MainActivity) context).getSchedulePopulator().resetup();
+                            ((MainActivity) context).resetup();
                         } else if (options[i].equalsIgnoreCase("DEACTIVATE")) {
                             schedule.set_state("inactive");
                             //fix - Multiple duplication of schedules Start
                             scheduleHelper.update(schedule);
                             //fix - Multiple duplication of schedules End
-                            ((MainActivity) context).getSchedulePopulator().resetup();
+                            ((MainActivity) context).resetup();
                         } else if (options[i].equalsIgnoreCase("SHOW DETAILS")) {
                             AlertDialog.Builder showDetails = new AlertDialog.Builder(context);
                             showDetails.setTitle("Show Details");

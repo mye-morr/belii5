@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.better_computer.habitaid.data.DatabaseHelper;
+import com.better_computer.habitaid.data.SearchEntry;
 import com.better_computer.habitaid.data.core.Games;
 import com.better_computer.habitaid.data.core.GamesHelper;
 import com.better_computer.habitaid.data.core.NonSchedHelper;
@@ -75,7 +76,7 @@ public class FragmentGames extends AbstractBaseFragment {
                         if (options[i].equalsIgnoreCase("DELETE")) {
                             Toast.makeText(context, "Schedule deleted.", Toast.LENGTH_SHORT).show();
                             nonSchedHelper.delete(st.get_id());
-                            ((MainActivity) context).getSchedulePopulator().resetup();
+                            ((MainActivity) context).resetup();
                             dialogInterface.dismiss();
                         }
                     }
@@ -91,6 +92,30 @@ public class FragmentGames extends AbstractBaseFragment {
                 alertOptions.show();
             }
         });
+    }
+
+    public void clearGames(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Clear Games");
+        builder.setMessage("Are you sure that you want to delete the games history?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                List<SearchEntry> keys = new ArrayList<SearchEntry>();
+                List<String> listCat = new ArrayList<String>();
+                listCat.add("%");
+                keys.add(new SearchEntry(SearchEntry.Type.STRING, "cat", SearchEntry.Search.LIKE, listCat));
+                gamesHelper.delete(keys);
+                ((MainActivity) context).resetup();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        builder.show();
     }
 
 }

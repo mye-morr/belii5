@@ -3,6 +3,8 @@ package com.better_computer.habitaid.form;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -34,6 +36,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.TimeZone;
 
+import com.better_computer.habitaid.FragmentEvents;
 import com.better_computer.habitaid.MainActivity;
 import com.better_computer.habitaid.R;
 import com.better_computer.habitaid.data.DatabaseHelper;
@@ -264,7 +267,7 @@ public class NewWizardDialog extends WizardDialog {
                         }
                     }
 
-                    ((MainActivity) context).getSchedulePopulator().resetup("library");
+                    ((MainActivity) context).resetup();
 
                     dismiss();
                 }
@@ -438,7 +441,7 @@ public class NewWizardDialog extends WizardDialog {
                         Toast.makeText(context, "Schedule saving failed.", Toast.LENGTH_SHORT).show();
                     }
 
-                    ((MainActivity) context).getSchedulePopulator().resetup();
+                    ((MainActivity) context).resetup();
                     dismiss();
                 }
             });
@@ -1011,7 +1014,7 @@ public class NewWizardDialog extends WizardDialog {
                         Toast.makeText(context, "Schedule saving failed.", Toast.LENGTH_SHORT).show();
                     }
 
-                    ((MainActivity) context).getSchedulePopulator().resetup();
+                    ((MainActivity) context).resetup();
 
                     dismiss();
 

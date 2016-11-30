@@ -178,7 +178,7 @@ public class NonSchedRecyclerViewAdapter extends RecyclerView.Adapter<NonSchedRe
 
                                 nonSchedHelper.delete(item.get_id());
 
-                                ((MainActivity) context).getSchedulePopulator().resetup();
+                                ((MainActivity) context).resetup();
                                 dialogInterface.dismiss();
 
                             }

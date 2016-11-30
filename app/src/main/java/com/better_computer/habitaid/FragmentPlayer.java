@@ -1,37 +1,26 @@
 package com.better_computer.habitaid;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.better_computer.habitaid.data.DatabaseHelper;
 import com.better_computer.habitaid.data.core.NonSched;
 import com.better_computer.habitaid.data.core.NonSchedHelper;
-import com.better_computer.habitaid.data.core.Schedule;
-import com.better_computer.habitaid.data.core.ScheduleHelper;
-import com.better_computer.habitaid.form.NewWizardDialog;
 import com.better_computer.habitaid.form.schedule.NonSchedListAdapter;
-import com.better_computer.habitaid.form.schedule.ScheduleListAdapter;
-import com.better_computer.habitaid.form.schedule.SchedulePopulator;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
