@@ -4,8 +4,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -25,12 +29,18 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class FragmentEvents extends Fragment {
+public class FragmentEvents extends AbstractBaseFragment {
 
-    protected Context context;
+
     protected ScheduleHelper scheduleHelper;
 
     public FragmentEvents() {
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_events, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -42,8 +52,8 @@ public class FragmentEvents extends Fragment {
 
     @Override
     public void onViewCreated(View rootView, Bundle savedInstanceState) {
+        super.onViewCreated(rootView, savedInstanceState);
 
-        this.context = getContext();
         this.scheduleHelper = DatabaseHelper.getInstance().getHelper(ScheduleHelper.class);
 
         final View dialog = rootView;

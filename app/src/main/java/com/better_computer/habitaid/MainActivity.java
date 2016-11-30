@@ -230,45 +230,45 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        return true;
+//    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.action_refresh:
-                schedulePopulator.resetup();
-                break;
-            case R.id.action_schedule_new_events:
-                schedulePopulator.setupNew("events");
-                break;
-            case R.id.action_schedule_new_contacts:
-                schedulePopulator.setupNew("contacts");
-                break;
-            case R.id.action_clear_history:
-                historyPopulator.setupClearHistory();
-                break;
-            case R.id.action_clear_games:
-                schedulePopulator.setupClearGames();
-                break;
-            case R.id.action_library_new:
-                schedulePopulator.setupNew("library");
-                break;
-            case R.id.action_schedule_new_ontrack:
-                schedulePopulator.setupNew("ontrack");
-                break;
-            case R.id.action_settings:
-                // startActivityForResult(new Intent(getApplicationContext(), SettingsActivity.class), SETTING_RESULT);
-                break;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//
+//        switch (item.getItemId()) {
+//            case R.id.action_refresh:
+//                schedulePopulator.resetup();
+//                break;
+//            case R.id.action_schedule_new_events:
+//                schedulePopulator.setupNew("events");
+//                break;
+//            case R.id.action_schedule_new_contacts:
+//                schedulePopulator.setupNew("contacts");
+//                break;
+//            case R.id.action_clear_history:
+//                historyPopulator.setupClearHistory();
+//                break;
+//            case R.id.action_clear_games:
+//                schedulePopulator.setupClearGames();
+//                break;
+//            case R.id.action_library_new:
+//                schedulePopulator.setupNew("library");
+//                break;
+//            case R.id.action_schedule_new_ontrack:
+//                schedulePopulator.setupNew("ontrack");
+//                break;
+//            case R.id.action_settings:
+//                // startActivityForResult(new Intent(getApplicationContext(), SettingsActivity.class), SETTING_RESULT);
+//                break;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
         /*
         @Override

@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -35,12 +37,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class FragmentFbIntegrate extends Fragment {
+public class FragmentFbIntegrate extends AbstractBaseFragment {
 
-    protected Context context;
     protected ScheduleHelper scheduleHelper;
 
     public FragmentFbIntegrate() {
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -52,8 +58,8 @@ public class FragmentFbIntegrate extends Fragment {
 
     @Override
     public void onViewCreated(View rootView, Bundle savedInstanceState) {
+        super.onViewCreated(rootView, savedInstanceState);
 
-        this.context = getContext();
         this.scheduleHelper = DatabaseHelper.getInstance().getHelper(ScheduleHelper.class);
 
         LoginButton loginButton = (LoginButton) rootView.findViewById(R.id.login_button);

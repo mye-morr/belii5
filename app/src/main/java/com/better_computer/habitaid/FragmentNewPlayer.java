@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -35,9 +37,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class FragmentNewPlayer extends Fragment {
+public class FragmentNewPlayer extends AbstractBaseFragment {
 
-    protected Context context;
     protected DatabaseHelper databaseHelper;
     protected PlayerHelper playerHelper;
     protected ContentHelper contentHelper;
@@ -56,8 +57,8 @@ public class FragmentNewPlayer extends Fragment {
 
     @Override
     public void onViewCreated(View rootView, Bundle savedInstanceState) {
+        super.onViewCreated(rootView, savedInstanceState);
 
-        this.context = getContext();
         this.databaseHelper = DatabaseHelper.getInstance();
         this.playerHelper = DatabaseHelper.getInstance().getHelper(PlayerHelper.class);
         this.contentHelper = DatabaseHelper.getInstance().getHelper(ContentHelper.class);

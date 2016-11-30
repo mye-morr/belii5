@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -25,12 +27,17 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class FragmentContacts extends Fragment {
+public class FragmentContacts extends AbstractBaseFragment {
 
-    protected Context context;
     protected ScheduleHelper scheduleHelper;
 
     public FragmentContacts() {
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_contacts, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -42,8 +49,8 @@ public class FragmentContacts extends Fragment {
 
     @Override
     public void onViewCreated(View rootView, Bundle savedInstanceState) {
+        super.onViewCreated(rootView, savedInstanceState);
 
-        this.context = getContext();
         this.scheduleHelper = DatabaseHelper.getInstance().getHelper(ScheduleHelper.class);
 
         final View dialog = rootView;
