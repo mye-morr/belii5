@@ -35,9 +35,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-public class FragmentPlayer extends Fragment {
+public class FragmentPlayer extends AbstractBaseFragment {
 
-    protected Context context;
     protected NonSchedHelper nonSchedHelper;
     protected volatile PlayerTask objCurPlayerTask;
 
@@ -53,8 +52,8 @@ public class FragmentPlayer extends Fragment {
 
     @Override
     public void onViewCreated(View rootView, Bundle savedInstanceState) {
+        super.onViewCreated(rootView, savedInstanceState);
 
-        this.context = getContext();
         this.nonSchedHelper = DatabaseHelper.getInstance().getHelper(NonSchedHelper.class);
 
         final List<NonSched> listPlayer = (List<NonSched>) (List<?>) nonSchedHelper.findBy("cat","player");

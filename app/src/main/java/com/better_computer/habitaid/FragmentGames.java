@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -23,13 +25,18 @@ import com.better_computer.habitaid.form.schedule.GamesListAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FragmentGames extends Fragment {
+public class FragmentGames extends AbstractBaseFragment {
 
-    protected Context context;
     protected NonSchedHelper nonSchedHelper;
     protected GamesHelper gamesHelper;
 
     public FragmentGames() {
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_games, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -41,8 +48,8 @@ public class FragmentGames extends Fragment {
 
     @Override
     public void onViewCreated(View rootView, Bundle savedInstanceState) {
+        super.onViewCreated(rootView, savedInstanceState);
 
-        this.context = getContext();
         this.nonSchedHelper = DatabaseHelper.getInstance().getHelper(NonSchedHelper.class);
         this.gamesHelper = DatabaseHelper.getInstance().getHelper(GamesHelper.class);
 
