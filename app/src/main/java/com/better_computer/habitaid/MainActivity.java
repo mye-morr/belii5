@@ -101,7 +101,15 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         setupDrawerToggle();
+
+        initItem();
     }
+
+    private void initItem() {
+        iLastPosition = 8;
+        resetup();
+    }
+
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
 
