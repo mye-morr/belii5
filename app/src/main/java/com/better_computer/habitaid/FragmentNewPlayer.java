@@ -1,23 +1,17 @@
 package com.better_computer.habitaid;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.better_computer.habitaid.data.DatabaseHelper;
 import com.better_computer.habitaid.data.SearchEntry;
@@ -25,16 +19,12 @@ import com.better_computer.habitaid.data.core.Content;
 import com.better_computer.habitaid.data.core.ContentHelper;
 import com.better_computer.habitaid.data.core.NonSched;
 import com.better_computer.habitaid.data.core.PlayerHelper;
-import com.better_computer.habitaid.data.core.Schedule;
-import com.better_computer.habitaid.data.core.ScheduleHelper;
-import com.better_computer.habitaid.form.NewWizardDialog;
 import com.better_computer.habitaid.form.schedule.ContentListAdapter;
 import com.better_computer.habitaid.form.schedule.NonSchedListAdapter;
-import com.better_computer.habitaid.form.schedule.ScheduleListAdapter;
 import com.better_computer.habitaid.util.DynaArray;
+import com.better_computer.habitaid.util.PlayerTask;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class FragmentNewPlayer extends AbstractBaseFragment {
@@ -43,6 +33,7 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
     protected PlayerHelper playerHelper;
     protected ContentHelper contentHelper;
 
+    protected volatile PlayerTask objCurPlayerTask;
     private DynaArray dynaArray = new DynaArray();
 
     public FragmentNewPlayer() {
@@ -128,6 +119,26 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
             }
         });
 
+        final Button btnStart = ((Button) rootView.findViewById(R.id.btnStart));
+        btnStart.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View view) {
+                objCurPlayerTask = new PlayerTask(context, dynaArray.currentStringArray(), "SUPER");
+                objCurPlayerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+        });
+
+        final Button btnStop = ((Button) rootView.findViewById(R.id.btnStop));
+        btnStop.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View view) {
+                if (objCurPlayerTask != null) {
+                    objCurPlayerTask.cancel(true);
+                }
+
+                Toast.makeText(context, "thanks for playing", Toast.LENGTH_SHORT).show();
+            }
+        });
    }
 
 }
