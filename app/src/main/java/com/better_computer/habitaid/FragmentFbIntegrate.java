@@ -3,6 +3,7 @@ package com.better_computer.habitaid;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -110,5 +111,12 @@ public class FragmentFbIntegrate extends AbstractBaseFragment {
             }
         });
    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        CallbackManager callbackManager = ((com.better_computer.habitaid.MyApplication)getActivity().getApplication()).getCallbackManager();
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
 
 }
