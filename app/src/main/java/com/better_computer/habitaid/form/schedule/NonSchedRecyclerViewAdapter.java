@@ -29,6 +29,7 @@ import com.better_computer.habitaid.data.DatabaseHelper;
 import com.better_computer.habitaid.data.core.NonSched;
 import com.better_computer.habitaid.data.core.NonSchedHelper;
 import com.better_computer.habitaid.form.NewWizardDialog;
+import com.better_computer.habitaid.player.PlayerNamePickerFragment;
 import com.better_computer.habitaid.util.BaseItemTouchHelperCallback;
 import com.better_computer.habitaid.util.ItemTouchHelperAdapter;
 
@@ -142,36 +143,44 @@ public class NonSchedRecyclerViewAdapter extends RecyclerView.Adapter<NonSchedRe
 
                             }
                             else if (options[i].equalsIgnoreCase("ADD TO PLAYER")) {
-                                DatabaseHelper dh = DatabaseHelper.getInstance();
-                                SQLiteDatabase database = dh.getWritableDatabase();
+                                PlayerNamePickerFragment fragment = PlayerNamePickerFragment.newInstance();
+                                fragment.setListener(new PlayerNamePickerFragment.Listener() {
+                                    @Override
+                                    public void onValueSet(String subcat, String name) {
+                                        DatabaseHelper dh = DatabaseHelper.getInstance();
+                                        SQLiteDatabase database = dh.getWritableDatabase();
 
-                                String sNewId = java.util.UUID.randomUUID().toString();
+                                        String sNewId = java.util.UUID.randomUUID().toString();
+                                        ContentValues contentValues = item.getContentValues();
+                                        contentValues.remove("_id");
+                                        contentValues.put("_id", sNewId);
+                                        contentValues.put("wt", "0");
+                                        contentValues.put("extpct", "0");
+                                        contentValues.put("extthr", "0");
+                                        contentValues.put("subcat", subcat);
+                                        contentValues.put("name", name);
 
-                                ContentValues contentValues = item.getContentValues();
-                                contentValues.remove("_id");
-                                contentValues.put("_id", sNewId);
-                                contentValues.put("wt", "0");
-                                contentValues.put("extpct", "0");
-                                contentValues.put("extthr", "0");
+                                        Log.i("DB", "Insert into " + "core_tbl_player" + ":" + contentValues.getAsString("_id"));
+                                        if (database.insert("core_tbl_player", null, contentValues) > 0) {
+                                            Toast.makeText(context, "Added to Player.", Toast.LENGTH_SHORT).show();
+                                        }
+                                        else {
+                                            Toast.makeText(context, "Adding to Player failed.", Toast.LENGTH_SHORT).show();
+                                        }
 
-                                Log.i("DB", "Insert into " + "core_tbl_player" + ":" + contentValues.getAsString("_id"));
-                                if (database.insert("core_tbl_player", null, contentValues) > 0) {
-                                    Toast.makeText(context, "Added to Player.", Toast.LENGTH_SHORT).show();
-                                }
-                                else {
-                                    Toast.makeText(context, "Adding to Player failed.", Toast.LENGTH_SHORT).show();
-                                }
+                                        String[] sxLines = item.getContent().split("\\n");
+                                        for(int j=0; j<sxLines.length; j++) {
+                                            ContentValues cv = new ContentValues();
+                                            cv.put("_state", "active");
+                                            cv.put("playerid", sNewId);
+                                            cv.put("content", sxLines[j]);
+                                            cv.put("weight", "0.1");
 
-                                String[] sxLines = item.getContent().split("\\n");
-                                for(int j=0; j<sxLines.length; j++) {
-                                    ContentValues cv = new ContentValues();
-                                    cv.put("_state", "active");
-                                    cv.put("playerid", sNewId);
-                                    cv.put("content", sxLines[j]);
-                                    cv.put("weight", "0.1");
-
-                                    database.insert("core_tbl_content", null, cv);
-                                }
+                                            database.insert("core_tbl_content", null, cv);
+                                        }
+                                    }
+                                });
+                                fragment.show(((MainActivity)context).getSupportFragmentManager(), null);
                             }
                             else if (options[i].equalsIgnoreCase("DELETE")) {
                                 Toast.makeText(context, "Schedule deleted.", Toast.LENGTH_SHORT).show();
