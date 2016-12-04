@@ -41,8 +41,6 @@ public class MainActivity extends AppCompatActivity {
     public String sSelectedPlayerSubcat = "";
     private int iLastPosition = 0;
 
-    private AbstractBaseFragment fragmentLast;
-
     public HistoryPopulator getHistoryPopulator() {
         return historyPopulator;
     }
@@ -116,8 +114,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void resetup() {
-        showFragment(fragmentLast, iLastPosition);
-        fragmentLast.refresh();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentById(R.id.container);
+        ((AbstractBaseFragment)fragment).refresh();
     }
 
     private void selectItem(int position) {
@@ -156,12 +155,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
-        fragmentLast = fragment;
-        showFragment(fragmentLast, position);
-
-    }
-
-    public void showFragment(Fragment fragment, int position) {
         if (fragment != null) {
 
             FragmentManager fragmentManager = getSupportFragmentManager();
