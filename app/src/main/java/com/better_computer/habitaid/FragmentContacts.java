@@ -1,10 +1,8 @@
 package com.better_computer.habitaid;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,8 +41,9 @@ public class FragmentContacts extends AbstractBaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_schedule_contacts, container, false);
-        return rootView;
+        View view = inflater.inflate(R.layout.fragment_schedule_contacts, container, false);
+        this.rootView = view;
+        return view;
     }
 
     @Override
@@ -112,19 +111,6 @@ public class FragmentContacts extends AbstractBaseFragment {
             }
         });
 
-        String sActiveSubcategory = "";
-        if(btnContacts2.isChecked()) {
-            sActiveSubcategory = btnContacts2.getTextOn().toString();
-        }
-        else if (btnContacts3.isChecked()) {
-            sActiveSubcategory = btnContacts3.getTextOn().toString();
-        }
-        else {
-            sActiveSubcategory = btnContacts1.getTextOn().toString();
-        }
-
-        List<Schedule> schedules = (List<Schedule>) (List<?>) scheduleHelper.findBy("subcategory", sActiveSubcategory);
-        listViewContacts.setAdapter(new ScheduleListAdapter(context, schedules));
         listViewContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -243,6 +229,32 @@ public class FragmentContacts extends AbstractBaseFragment {
             }
         });
 
+        refresh();
     }
 
+    @Override
+    public void refresh() {
+
+        final View dialog = rootView;
+
+        final ListView listViewContacts = ((ListView) rootView.findViewById(R.id.schedule_list));
+
+        final ToggleButton btnContacts1 = ((ToggleButton) dialog.findViewById(R.id.btnContacts1));
+        final ToggleButton btnContacts2 = ((ToggleButton) dialog.findViewById(R.id.btnContacts2));
+        final ToggleButton btnContacts3 = ((ToggleButton) dialog.findViewById(R.id.btnContacts3));
+
+        String sActiveSubcategory = "";
+        if(btnContacts2.isChecked()) {
+            sActiveSubcategory = btnContacts2.getTextOn().toString();
+        }
+        else if (btnContacts3.isChecked()) {
+            sActiveSubcategory = btnContacts3.getTextOn().toString();
+        }
+        else {
+            sActiveSubcategory = btnContacts1.getTextOn().toString();
+        }
+
+        List<Schedule> schedules = (List<Schedule>) (List<?>) scheduleHelper.findBy("subcategory", sActiveSubcategory);
+        listViewContacts.setAdapter(new ScheduleListAdapter(context, schedules));
+    }
 }

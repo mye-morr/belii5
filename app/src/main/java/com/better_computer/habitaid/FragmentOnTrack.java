@@ -1,10 +1,8 @@
 package com.better_computer.habitaid;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,6 +29,7 @@ import java.util.List;
 public class FragmentOnTrack extends AbstractBaseFragment {
 
     protected ScheduleHelper scheduleHelper;
+    protected View rootView;
 
     public FragmentOnTrack() {
     }
@@ -44,8 +43,9 @@ public class FragmentOnTrack extends AbstractBaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_schedule_ontrack, container, false);
-        return rootView;
+        View view = inflater.inflate(R.layout.fragment_schedule_ontrack, container, false);
+        this.rootView = view;
+        return view;
     }
 
     @Override
@@ -93,16 +93,6 @@ public class FragmentOnTrack extends AbstractBaseFragment {
             }
         });
 
-        String sActiveSubcategory = "";
-        if(btnOnTrack1.isChecked()) {
-            sActiveSubcategory = btnOnTrack1.getTextOn().toString();
-        }
-        else {
-            sActiveSubcategory = btnOnTrack2.getTextOn().toString();
-        }
-
-        List<Schedule> schedules = (List<Schedule>) (List<?>) scheduleHelper.findBy("subcategory", sActiveSubcategory);
-        listView.setAdapter(new ScheduleListAdapter(context, schedules));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -220,5 +210,26 @@ public class FragmentOnTrack extends AbstractBaseFragment {
                 alertOptions.show();
             }
         });
+
+        refresh();
    }
+
+    @Override
+    public void refresh() {
+        final View dialog = rootView;
+        final ToggleButton btnOnTrack1 = ((ToggleButton) dialog.findViewById(R.id.btnOnTrack1));
+        final ToggleButton btnOnTrack2 = ((ToggleButton) dialog.findViewById(R.id.btnOnTrack2));
+        final ListView listView = ((ListView) rootView.findViewById(R.id.schedule_list));
+
+        String sActiveSubcategory = "";
+        if(btnOnTrack1.isChecked()) {
+            sActiveSubcategory = btnOnTrack1.getTextOn().toString();
+        }
+        else {
+            sActiveSubcategory = btnOnTrack2.getTextOn().toString();
+        }
+
+        List<Schedule> schedules = (List<Schedule>) (List<?>) scheduleHelper.findBy("subcategory", sActiveSubcategory);
+        listView.setAdapter(new ScheduleListAdapter(context, schedules));
+    }
 }

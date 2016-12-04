@@ -1,15 +1,11 @@
 package com.better_computer.habitaid;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -31,7 +27,6 @@ import java.util.List;
 
 public class FragmentEvents extends AbstractBaseFragment {
 
-
     protected ScheduleHelper scheduleHelper;
 
     public FragmentEvents() {
@@ -46,8 +41,9 @@ public class FragmentEvents extends AbstractBaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_schedule_events, container, false);
-        return rootView;
+        View view = inflater.inflate(R.layout.fragment_schedule_events, container, false);
+        this.rootView = view;
+        return view;
     }
 
     @Override
@@ -161,25 +157,6 @@ public class FragmentEvents extends AbstractBaseFragment {
             }
         });
 
-        String sActiveSubcategory = "";
-        if(btnEvents2.isChecked()) {
-            sActiveSubcategory = btnEvents2.getTextOn().toString();
-        }
-        else if(btnEvents3.isChecked()) {
-            sActiveSubcategory = btnEvents3.getTextOn().toString();
-        }
-        else if(btnEvents4.isChecked()) {
-            sActiveSubcategory = btnEvents4.getTextOn().toString();
-        }
-        else if(btnEvents5.isChecked()) {
-            sActiveSubcategory = btnEvents5.getTextOn().toString();
-        }
-        else {
-            sActiveSubcategory = btnEvents1.getTextOn().toString();
-        }
-
-        List<Schedule> schedules = (List<Schedule>) (List<?>) scheduleHelper.findBy("subcategory", sActiveSubcategory);
-        listView.setAdapter(new ScheduleListAdapter(context, schedules));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -297,6 +274,40 @@ public class FragmentEvents extends AbstractBaseFragment {
                 alertOptions.show();
             }
         });
+
+        refresh();
     }
 
+    @Override
+    public void refresh() {
+        final View dialog = rootView;
+
+        final ListView listView = ((ListView) rootView.findViewById(R.id.schedule_list));
+
+        final ToggleButton btnEvents1 = ((ToggleButton) dialog.findViewById(R.id.btnEvents1));
+        final ToggleButton btnEvents2 = ((ToggleButton) dialog.findViewById(R.id.btnEvents2));
+        final ToggleButton btnEvents3 = ((ToggleButton) dialog.findViewById(R.id.btnEvents3));
+        final ToggleButton btnEvents4 = ((ToggleButton) dialog.findViewById(R.id.btnEvents4));
+        final ToggleButton btnEvents5 = ((ToggleButton) dialog.findViewById(R.id.btnEvents5));
+
+        String sActiveSubcategory = "";
+        if(btnEvents2.isChecked()) {
+            sActiveSubcategory = btnEvents2.getTextOn().toString();
+        }
+        else if(btnEvents3.isChecked()) {
+            sActiveSubcategory = btnEvents3.getTextOn().toString();
+        }
+        else if(btnEvents4.isChecked()) {
+            sActiveSubcategory = btnEvents4.getTextOn().toString();
+        }
+        else if(btnEvents5.isChecked()) {
+            sActiveSubcategory = btnEvents5.getTextOn().toString();
+        }
+        else {
+            sActiveSubcategory = btnEvents1.getTextOn().toString();
+        }
+
+        List<Schedule> schedules = (List<Schedule>) (List<?>) scheduleHelper.findBy("subcategory", sActiveSubcategory);
+        listView.setAdapter(new ScheduleListAdapter(context, schedules));
+    }
 }

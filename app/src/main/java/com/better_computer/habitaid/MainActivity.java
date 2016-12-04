@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     public String sSelectedPlayerSubcat = "";
     private int iLastPosition = 0;
 
+    private AbstractBaseFragment fragmentLast;
+
     public HistoryPopulator getHistoryPopulator() {
         return historyPopulator;
     }
@@ -102,14 +104,7 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         setupDrawerToggle();
 
-        initItem();
     }
-
-    private void initItem() {
-        iLastPosition = 8;
-        resetup();
-    }
-
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
 
@@ -121,12 +116,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void resetup() {
-        selectItem(iLastPosition);
+        showFragment(fragmentLast, iLastPosition);
+        fragmentLast.refresh();
     }
 
     private void selectItem(int position) {
 
-        Fragment fragment = null;
+        AbstractBaseFragment fragment = null;
 
         switch (position) {
             case 0:
@@ -160,7 +156,14 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
+        fragmentLast = fragment;
+        showFragment(fragmentLast, position);
+
+    }
+
+    public void showFragment(Fragment fragment, int position) {
         if (fragment != null) {
+
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
 
@@ -168,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
             mDrawerList.setSelection(position);
             setTitle(mNavigationDrawerItemTitles[position]);
             mDrawerLayout.closeDrawer(mDrawerList);
-
         } else {
             Log.e("MainActivity", "Error in creating fragment");
         }

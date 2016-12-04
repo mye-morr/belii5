@@ -1,10 +1,8 @@
 package com.better_computer.habitaid;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,7 +18,6 @@ import com.better_computer.habitaid.data.SearchEntry;
 import com.better_computer.habitaid.data.core.Games;
 import com.better_computer.habitaid.data.core.GamesHelper;
 import com.better_computer.habitaid.data.core.NonSchedHelper;
-import com.better_computer.habitaid.data.core.ScheduleHelper;
 import com.better_computer.habitaid.form.schedule.GamesListAdapter;
 
 import java.util.ArrayList;
@@ -30,6 +27,10 @@ public class FragmentGames extends AbstractBaseFragment {
 
     protected NonSchedHelper nonSchedHelper;
     protected GamesHelper gamesHelper;
+
+    @Override
+    public void refresh() {
+    }
 
     public FragmentGames() {
     }

@@ -36,6 +36,10 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
     protected volatile PlayerTask objCurPlayerTask;
     private DynaArray dynaArray = new DynaArray();
 
+    @Override
+    public void refresh() {
+    }
+
     public FragmentNewPlayer() {
     }
 

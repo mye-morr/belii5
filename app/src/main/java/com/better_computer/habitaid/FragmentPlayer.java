@@ -25,6 +25,10 @@ public class FragmentPlayer extends AbstractBaseFragment {
     protected NonSchedHelper nonSchedHelper;
     protected volatile PlayerTask objCurPlayerTask;
 
+    @Override
+    public void refresh() {
+    }
+
     public FragmentPlayer() {
     }
 

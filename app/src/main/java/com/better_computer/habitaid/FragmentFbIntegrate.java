@@ -1,8 +1,5 @@
 package com.better_computer.habitaid;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,18 +10,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.better_computer.habitaid.data.DatabaseHelper;
-import com.better_computer.habitaid.data.core.Schedule;
 import com.better_computer.habitaid.data.core.ScheduleHelper;
-import com.better_computer.habitaid.form.NewWizardDialog;
-import com.better_computer.habitaid.form.schedule.ScheduleListAdapter;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -34,13 +22,13 @@ import com.facebook.login.widget.LoginButton;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
 public class FragmentFbIntegrate extends AbstractBaseFragment {
 
     protected ScheduleHelper scheduleHelper;
+
+    @Override
+    public void refresh() {
+    }
 
     public FragmentFbIntegrate() {
     }
