@@ -40,8 +40,9 @@ public class FragmentLibrary extends AbstractBaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_schedule_library, container, false);
-        return rootView;
+        View view = inflater.inflate(R.layout.fragment_schedule_library, container, false);
+        this.rootView = view;
+        return view;
     }
 
     @Override
