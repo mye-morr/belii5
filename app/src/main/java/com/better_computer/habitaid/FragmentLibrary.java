@@ -60,25 +60,6 @@ public class FragmentLibrary extends AbstractBaseFragment {
         itemTouchHelper.attachToRecyclerView(listViewLibrary);
         listViewLibrary.setAdapter(libViewAdapter);
 
-        SQLiteDatabase database = this.databaseHelper.getReadableDatabase();
-
-        String sql = "SELECT DISTINCT cat FROM core_tbl_nonsched ORDER BY cat";
-        Cursor cursor = database.rawQuery(sql, new String[0]);
-
-        List<String> listCat = new ArrayList<String>();
-        if (cursor.moveToFirst()) {
-            do {
-                listCat.add(cursor.getString(0));
-            } while (cursor.moveToNext());
-        }
-
-        //fix - android.database.CursorWindowAllocationException Start
-        cursor.close();
-        //fix - android.database.CursorWindowAllocationException End
-
-        ArrayAdapter<String> adapterCat = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, listCat);
-        listViewCategory.setAdapter(adapterCat);
-
         listViewCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -111,6 +92,8 @@ public class FragmentLibrary extends AbstractBaseFragment {
 
                 List<NonSched> listNonSched = (List<NonSched>) (List<?>) nonSchedHelper.find(keys, "ORDER BY iprio");
                 libViewAdapter.setList(listNonSched);
+
+                refresh();
             }
         });
 
@@ -127,6 +110,8 @@ public class FragmentLibrary extends AbstractBaseFragment {
 
                 List<NonSched> listNonSched = (List<NonSched>) (List<?>) nonSchedHelper.find(keys, "ORDER BY iprio");
                 libViewAdapter.setList(listNonSched);
+
+                refresh();
             }
         });
 
@@ -138,12 +123,32 @@ public class FragmentLibrary extends AbstractBaseFragment {
         String sCat = ((MainActivity) (context)).sSelectedLibraryCat;
         String sSubcat = ((MainActivity) (context)).sSelectedLibrarySubcat;
 
+        final ListView listViewCategory = ((ListView) rootView.findViewById(R.id.schedule_category_list));
         final ListView listViewSubcategory = ((ListView) rootView.findViewById(R.id.schedule_subcategory_list));
         final RecyclerView listViewLibrary = ((RecyclerView) rootView.findViewById(R.id.schedule_library_list));
         final NonSchedRecyclerViewAdapter libViewAdapter = new NonSchedRecyclerViewAdapter(context);
         ItemTouchHelper itemTouchHelper = libViewAdapter.getItemTouchHelper();
         itemTouchHelper.attachToRecyclerView(listViewLibrary);
         listViewLibrary.setAdapter(libViewAdapter);
+
+        SQLiteDatabase database = this.databaseHelper.getReadableDatabase();
+
+        String sql = "SELECT DISTINCT cat FROM core_tbl_nonsched ORDER BY cat";
+        Cursor cursor = database.rawQuery(sql, new String[0]);
+
+        List<String> listCat = new ArrayList<String>();
+        if (cursor.moveToFirst()) {
+            do {
+                listCat.add(cursor.getString(0));
+            } while (cursor.moveToNext());
+        }
+
+        //fix - android.database.CursorWindowAllocationException Start
+        cursor.close();
+        //fix - android.database.CursorWindowAllocationException End
+
+        ArrayAdapter<String> adapterCat = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, listCat);
+        listViewCategory.setAdapter(adapterCat);
 
         if (sCat.length() > 0) {
             String sql2 = "SELECT DISTINCT subcat FROM core_tbl_nonsched WHERE cat='" + sCat + "' ORDER BY subcat";
