@@ -74,6 +74,8 @@ public class FragmentContacts extends AbstractBaseFragment {
                 else {
                     btnContacts1.setChecked(true);
                 }
+
+                ((MainActivity) context).sSelectedContactsSubcat = btnContacts1.getTextOn().toString();
             }
         });
 
@@ -91,6 +93,8 @@ public class FragmentContacts extends AbstractBaseFragment {
                 else {
                     btnContacts2.setChecked(true);
                 }
+
+                ((MainActivity) context).sSelectedContactsSubcat = btnContacts2.getTextOn().toString();
             }
         });
 
@@ -108,6 +112,8 @@ public class FragmentContacts extends AbstractBaseFragment {
                 else {
                     btnContacts3.setChecked(true);
                 }
+
+            ((MainActivity) context).sSelectedContactsSubcat = btnContacts3.getTextOn().toString();
             }
         });
 

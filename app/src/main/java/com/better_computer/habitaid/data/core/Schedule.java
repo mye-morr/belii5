@@ -141,15 +141,6 @@ public class Schedule extends AbstractModel{
         return 0;
     }
 
-    public int getSubCatSelected(String[] subcat){
-        for (int i = 0; i < subcat.length; i++) {
-            if(subcat[i].equalsIgnoreCase(subcategory)){
-                return i;
-            }
-        }
-        return 0;
-    }
-
     public int getPrepWindowTypeSelected(String[] types){
         for (int i = 0; i < types.length; i++) {
             if(types[i].equalsIgnoreCase(prepWindowType)){

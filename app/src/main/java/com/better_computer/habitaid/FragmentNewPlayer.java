@@ -36,18 +36,15 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
     protected volatile PlayerTask objCurPlayerTask;
     private DynaArray dynaArray = new DynaArray();
 
-    @Override
-    public void refresh() {
-    }
-
     public FragmentNewPlayer() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_schedule_new_player, container, false);
-        return rootView;
+        View view = inflater.inflate(R.layout.fragment_schedule_new_player, container, false);
+        this.rootView = view;
+        return view;
     }
 
     @Override
@@ -61,25 +58,6 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
         final ListView listViewSubcat = ((ListView) rootView.findViewById(R.id.schedule_category_list));
         final ListView listViewItems = ((ListView) rootView.findViewById(R.id.schedule_subcategory_list));
         final ListView listViewContent = ((ListView) rootView.findViewById(R.id.schedule_new_player_list));
-
-        SQLiteDatabase database = this.databaseHelper.getReadableDatabase();
-
-        String sql = "SELECT DISTINCT subcat FROM core_tbl_player ORDER BY subcat";
-        Cursor cursor = database.rawQuery(sql, new String[0]);
-
-        List<String> listSubcat = new ArrayList<String>();
-        if (cursor.moveToFirst()) {
-            do {
-                listSubcat.add(cursor.getString(0));
-            } while (cursor.moveToNext());
-        }
-
-        //fix - android.database.CursorWindowAllocationException Start
-        cursor.close();
-        //fix - android.database.CursorWindowAllocationException End
-
-        ArrayAdapter<String> adapterSubcat = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, listSubcat);
-        listViewSubcat.setAdapter(adapterSubcat);
 
         listViewSubcat.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -143,6 +121,33 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
                 Toast.makeText(context, "thanks for playing", Toast.LENGTH_SHORT).show();
             }
         });
+
+        refresh();
    }
 
+    @Override
+    public void refresh() {
+        final ListView listViewSubcat = ((ListView) rootView.findViewById(R.id.schedule_category_list));
+        final ListView listViewItems = ((ListView) rootView.findViewById(R.id.schedule_subcategory_list));
+        final ListView listViewContent = ((ListView) rootView.findViewById(R.id.schedule_new_player_list));
+
+        SQLiteDatabase database = this.databaseHelper.getReadableDatabase();
+
+        String sql = "SELECT DISTINCT subcat FROM core_tbl_player ORDER BY subcat";
+        Cursor cursor = database.rawQuery(sql, new String[0]);
+
+        List<String> listSubcat = new ArrayList<String>();
+        if (cursor.moveToFirst()) {
+            do {
+                listSubcat.add(cursor.getString(0));
+            } while (cursor.moveToNext());
+        }
+
+        //fix - android.database.CursorWindowAllocationException Start
+        cursor.close();
+        //fix - android.database.CursorWindowAllocationException End
+
+        ArrayAdapter<String> adapterSubcat = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, listSubcat);
+        listViewSubcat.setAdapter(adapterSubcat);
+    }
 }

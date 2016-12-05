@@ -3,8 +3,6 @@ package com.better_computer.habitaid.form;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -27,16 +25,6 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Random;
-import java.util.TimeZone;
-
-import com.better_computer.habitaid.FragmentEvents;
 import com.better_computer.habitaid.MainActivity;
 import com.better_computer.habitaid.R;
 import com.better_computer.habitaid.data.DatabaseHelper;
@@ -49,6 +37,15 @@ import com.better_computer.habitaid.data.core.Schedule;
 import com.better_computer.habitaid.data.core.ScheduleHelper;
 import com.better_computer.habitaid.form.schedule.ContactListAdapter;
 import com.better_computer.habitaid.form.schedule.NonSchedListAdapter;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Random;
+import java.util.TimeZone;
 
 public class NewWizardDialog extends WizardDialog {
 
@@ -297,7 +294,10 @@ public class NewWizardDialog extends WizardDialog {
             }
 
             final Spinner spinCat = ((Spinner)dialog.findViewById(R.id.contacts_category));
-            spinCat.setSelection(schedule.getSubCatSelected(contactCategories));
+
+            String sSelectedContactsSubcat = ((MainActivity) context).sSelectedContactsSubcat;
+            spinCat.setSelection(getSubCatSelected(contactCategories, sSelectedContactsSubcat));
+
             spinCat.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -534,7 +534,9 @@ public class NewWizardDialog extends WizardDialog {
 
             final Spinner spinCat = ((Spinner)dialog.findViewById(R.id.events_category));
 
-            spinCat.setSelection(schedule.getSubCatSelected(eventCategories));
+            String sSelectedEventsSubcat = ((MainActivity) context).sSelectedEventsSubcat;
+            spinCat.setSelection(getSubCatSelected(eventCategories, sSelectedEventsSubcat));
+
             spinCat.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -1029,4 +1031,14 @@ public class NewWizardDialog extends WizardDialog {
             });
         }
     }
+
+    public int getSubCatSelected(String[] subcat, String sMatch){
+        for (int i = 0; i < subcat.length; i++) {
+            if(subcat[i].equalsIgnoreCase(sMatch)){
+                return i;
+            }
+        }
+        return 0;
+    }
+
 }

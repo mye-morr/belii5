@@ -78,6 +78,8 @@ public class FragmentEvents extends AbstractBaseFragment {
                 else {
                     btnEvents1.setChecked(true);
                 }
+
+                ((MainActivity) context).sSelectedEventsSubcat = btnEvents1.getTextOn().toString();
             }
         });
 
@@ -97,6 +99,8 @@ public class FragmentEvents extends AbstractBaseFragment {
                 else {
                     btnEvents2.setChecked(true);
                 }
+
+                ((MainActivity) context).sSelectedEventsSubcat = btnEvents2.getTextOn().toString();
             }
         });
 
@@ -116,6 +120,8 @@ public class FragmentEvents extends AbstractBaseFragment {
                 else {
                     btnEvents3.setChecked(true);
                 }
+
+                ((MainActivity) context).sSelectedEventsSubcat = btnEvents3.getTextOn().toString();
             }
         });
 
@@ -135,6 +141,8 @@ public class FragmentEvents extends AbstractBaseFragment {
                 else {
                     btnEvents4.setChecked(true);
                 }
+
+                ((MainActivity) context).sSelectedEventsSubcat = btnEvents4.getTextOn().toString();
             }
         });
 
@@ -154,6 +162,8 @@ public class FragmentEvents extends AbstractBaseFragment {
                 else {
                     btnEvents5.setChecked(true);
                 }
+
+                ((MainActivity) context).sSelectedEventsSubcat = btnEvents5.getTextOn().toString();
             }
         });
 

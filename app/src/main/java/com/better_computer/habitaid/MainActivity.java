@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
 
     public String sSelectedLibraryCat = "";
     public String sSelectedLibrarySubcat = "";
+    public String sSelectedContactsSubcat = "";
+    public String sSelectedEventsSubcat = "";
     public String sSelectedPlayerCat = "";
     public String sSelectedPlayerSubcat = "";
     private int iLastPosition = 0;

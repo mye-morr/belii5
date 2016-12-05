@@ -19,6 +19,8 @@ abstract public class AbstractBaseFragment extends Fragment {
 
     private static final int SETTING_RESULT = 1;
 
+    public abstract void refresh();
+
     protected Context context;
     protected View rootView;
 
@@ -74,7 +76,5 @@ abstract public class AbstractBaseFragment extends Fragment {
 
         super.onActivityResult(requestCode, resultCode, data);
     }
-
-    public abstract void refresh();
 
 }

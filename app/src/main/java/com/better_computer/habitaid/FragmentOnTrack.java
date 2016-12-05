@@ -74,6 +74,8 @@ public class FragmentOnTrack extends AbstractBaseFragment {
                 else {
                     btnOnTrack1.setChecked(true);
                 }
+
+                ((MainActivity) context).sSelectedEventsSubcat = btnOnTrack1.getTextOn().toString();
             }
         });
 
@@ -90,6 +92,8 @@ public class FragmentOnTrack extends AbstractBaseFragment {
                 else {
                     btnOnTrack2.setChecked(true);
                 }
+
+                ((MainActivity) context).sSelectedEventsSubcat = btnOnTrack2.getTextOn().toString();
             }
         });
 
