@@ -29,6 +29,17 @@ public class Player extends NonSched {
         extthr = fetchData(data, "extthr");
     }
 
+    public void copyFromNonSched(NonSched input) {
+        setCat("player");
+        setSubcat(input.getSubcat());
+        setSubsub(input.getSubsub());
+        setIprio(input.getIprio());
+        setName(input.getName());
+        setAbbrev(input.getAbbrev());
+        setContent(input.getContent());
+        setNotes(input.getNotes());
+    }
+
     public String getWt() { return wt; }
 
     public void setWt(String wt) { this.wt = wt; }
