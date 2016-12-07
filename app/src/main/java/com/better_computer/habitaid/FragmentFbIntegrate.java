@@ -71,6 +71,11 @@ public class FragmentFbIntegrate extends AbstractBaseFragment {
                 uiHander = null;
                 if (StopwatchUtil.getStopwatchStopTime(context) < 0) {
                     StopwatchUtil.setStopwatchStopTime(context, System.currentTimeMillis());
+
+                    long passedTime = StopwatchUtil.getStopwatchPassedTime(context);
+                    long passedSeconds = passedTime / 1000;
+                    String strPassedTime = String.format("%d:%02d", passedSeconds / 60, passedSeconds % 60);
+                    stopwatchView.setText(strPassedTime);
                 }
             }
         });
@@ -164,10 +169,12 @@ public class FragmentFbIntegrate extends AbstractBaseFragment {
         @Override
         public void run() {
             try {
+                /* we don't want to see the elapsed time until end
                 long passedTime = StopwatchUtil.getStopwatchPassedTime(context);
                 long passedSeconds = passedTime / 1000;
                 String strPassedTime = String.format("%d:%02d", passedSeconds / 60, passedSeconds % 60);
                 stopwatchView.setText(strPassedTime);
+                */
             } finally {
                 if (uiHander != null && StopwatchUtil.getStopwatchStopTime(context) < 0) {
                     uiHander.postDelayed(updateStopwatchRunnable, 1000L);
