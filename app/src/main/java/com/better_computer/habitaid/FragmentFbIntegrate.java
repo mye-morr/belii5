@@ -62,6 +62,7 @@ public class FragmentFbIntegrate extends AbstractBaseFragment {
                     uiHander = new Handler();
                 }
                 uiHander.post(updateStopwatchRunnable);
+                stopwatchView.setText("");
             }
         });
 
