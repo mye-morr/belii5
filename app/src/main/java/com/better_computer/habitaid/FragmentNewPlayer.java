@@ -69,14 +69,9 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String sSubcat = listViewSubcat.getItemAtPosition(i).toString();
-
                 ((MainActivity) context).sSelectedPlayerSubcat = sSubcat;
 
-                List<SearchEntry> keys = new ArrayList<SearchEntry>();
-                keys.add(new SearchEntry(SearchEntry.Type.STRING, "subcat", SearchEntry.Search.EQUAL, sSubcat));
-
-                List<NonSched> listNonSched = (List<NonSched>) (List<?>) playerHelper.find(keys);
-                listViewItems.setAdapter(new NonSchedListAdapter(context, listNonSched));
+                refreshItemList();
             }
         });
 
@@ -87,8 +82,14 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
 
                 AlertDialog.Builder alertOptions = new AlertDialog.Builder(context);
                 List<String> optsList = new ArrayList<String>();
-                optsList.add("Add");
-                optsList.add("Remove");
+
+                if(nsPlayer.get_state().equalsIgnoreCase("active")) {
+                    optsList.add("Remove");
+                }
+                else {
+                    optsList.add("Add");
+                }
+
                 final String[] options = optsList.toArray(new String[]{});
                 alertOptions.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, android.R.id.text1, options), new DialogInterface.OnClickListener() {
                     @Override
@@ -103,12 +104,13 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
                                     Content content = new Content();
                                     String sNewId = java.util.UUID.randomUUID().toString();
                                     content.set_id(sNewId);
-                                    content.set_state("inactive");
+                                    content.set_state("active");
                                     content.setPlayerid(nsPlayer.get_id());
                                     content.setContent(strContent);
                                     content.setWeight(0.1);
                                     contentHelper.create(content);
                                 }
+                                refreshItemList();
                                 refreshContentList();
                             }
                         } else if (options[i].equalsIgnoreCase("Remove")) {
@@ -116,6 +118,7 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
                                 nsPlayer.set_state("inactive");
                                 playerHelper.update(nsPlayer);
                                 contentHelper.deleteByPlayerId(nsPlayer.get_id());
+                                refreshItemList();
                                 refreshContentList();
                             }
                         }
@@ -181,7 +184,6 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
     @Override
     public void refresh() {
         final ListView listViewSubcat = ((ListView) rootView.findViewById(R.id.schedule_category_list));
-        final ListView listViewItems = ((ListView) rootView.findViewById(R.id.schedule_subcategory_list));
 
         SQLiteDatabase database = this.databaseHelper.getReadableDatabase();
 
@@ -201,8 +203,22 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
 
         ArrayAdapter<String> adapterSubcat = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, listSubcat);
         listViewSubcat.setAdapter(adapterSubcat);
-
+        refreshItemList();
         refreshContentList();
+    }
+
+    private void refreshItemList() {
+        String sSubcat = ((MainActivity) context).sSelectedPlayerSubcat;
+        if(!sSubcat.equalsIgnoreCase("")) {
+            final ListView listViewItems = ((ListView) rootView.findViewById(R.id.schedule_subcategory_list));
+
+
+            List<SearchEntry> keys = new ArrayList<SearchEntry>();
+            keys.add(new SearchEntry(SearchEntry.Type.STRING, "subcat", SearchEntry.Search.EQUAL, sSubcat));
+
+            List<NonSched> listNonSched = (List<NonSched>) (List<?>) playerHelper.find(keys);
+            listViewItems.setAdapter(new NonSchedListAdapter(context, listNonSched));
+        }
     }
 
     private void refreshContentList() {
