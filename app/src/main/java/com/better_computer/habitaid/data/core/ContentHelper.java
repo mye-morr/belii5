@@ -3,6 +3,10 @@ package com.better_computer.habitaid.data.core;
 import android.content.Context;
 
 import com.better_computer.habitaid.data.AbstractHelper;
+import com.better_computer.habitaid.data.SearchEntry;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ContentHelper extends AbstractHelper<Content> {
 
@@ -17,6 +21,12 @@ public class ContentHelper extends AbstractHelper<Content> {
     @Override
     protected Content getModelInstance() {
         return new Content();
+    }
+
+    public boolean deleteByPlayerId(String playerid) {
+        List<SearchEntry> keys = new ArrayList<SearchEntry>();
+        keys.add(new SearchEntry(SearchEntry.Type.STRING, "playerid", SearchEntry.Search.EQUAL, playerid));
+        return delete(keys);
     }
 
 }

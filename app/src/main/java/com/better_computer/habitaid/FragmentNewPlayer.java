@@ -1,5 +1,7 @@
 package com.better_computer.habitaid;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -18,9 +20,12 @@ import com.better_computer.habitaid.data.SearchEntry;
 import com.better_computer.habitaid.data.core.Content;
 import com.better_computer.habitaid.data.core.ContentHelper;
 import com.better_computer.habitaid.data.core.NonSched;
+import com.better_computer.habitaid.data.core.Player;
 import com.better_computer.habitaid.data.core.PlayerHelper;
+import com.better_computer.habitaid.form.NewWizardDialog;
 import com.better_computer.habitaid.form.schedule.ContentListAdapter;
 import com.better_computer.habitaid.form.schedule.NonSchedListAdapter;
+import com.better_computer.habitaid.player.PlayerNamePickerFragment;
 import com.better_computer.habitaid.util.DynaArray;
 import com.better_computer.habitaid.util.PlayerTask;
 
@@ -34,7 +39,8 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
     protected ContentHelper contentHelper;
 
     protected volatile PlayerTask objCurPlayerTask;
-    private DynaArray dynaArray = new DynaArray();
+    //private DynaArray dynaArray = new DynaArray();
+    private ListView listViewContent;
 
     public FragmentNewPlayer() {
     }
@@ -57,7 +63,7 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
 
         final ListView listViewSubcat = ((ListView) rootView.findViewById(R.id.schedule_category_list));
         final ListView listViewItems = ((ListView) rootView.findViewById(R.id.schedule_subcategory_list));
-        final ListView listViewContent = ((ListView) rootView.findViewById(R.id.schedule_new_player_list));
+        listViewContent = ((ListView) rootView.findViewById(R.id.schedule_new_player_list));
 
         listViewSubcat.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -79,34 +85,81 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 final NonSched nsPlayer = (NonSched)listViewItems.getItemAtPosition(i);
 
-                String arrayid = nsPlayer.get_id();
-                if (dynaArray.containsContributingArray(arrayid)) {
-                    dynaArray.removeContributingArray(arrayid);
-                } else {
-                    List<SearchEntry> keys = new ArrayList<SearchEntry>();
-                    keys.add(new SearchEntry(SearchEntry.Type.STRING, "playerid", SearchEntry.Search.EQUAL, nsPlayer.get_id()));
-                    List<Content> listContent = contentHelper.find(keys);
-                    dynaArray.addContributingArray(listContent, 1, arrayid, 0.6, 0.05);
-                }
-                listViewContent.setAdapter(new ContentListAdapter(context, dynaArray.currentInternalItemArray()));
+                AlertDialog.Builder alertOptions = new AlertDialog.Builder(context);
+                List<String> optsList = new ArrayList<String>();
+                optsList.add("Add");
+                optsList.add("Remove");
+                final String[] options = optsList.toArray(new String[]{});
+                alertOptions.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, android.R.id.text1, options), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (options[i].equalsIgnoreCase("Add")) {
+                            if (!"active".equals(nsPlayer.get_state())) {
+                                nsPlayer.set_state("active");
+                                playerHelper.update(nsPlayer);
+                                String playerContent = nsPlayer.getContent();
+                                String[] contentArray = playerContent.split("\n");
+                                for (String strContent : contentArray) {
+                                    Content content = new Content();
+                                    String sNewId = java.util.UUID.randomUUID().toString();
+                                    content.set_id(sNewId);
+                                    content.set_state("inactive");
+                                    content.setPlayerid(nsPlayer.get_id());
+                                    content.setContent(strContent);
+                                    content.setWeight(0.1);
+                                    contentHelper.create(content);
+                                }
+                                refreshContentList();
+                            }
+                        } else if (options[i].equalsIgnoreCase("Remove")) {
+                            if ("active".equals(nsPlayer.get_state())) {
+                                nsPlayer.set_state("inactive");
+                                playerHelper.update(nsPlayer);
+                                contentHelper.deleteByPlayerId(nsPlayer.get_id());
+                                refreshContentList();
+                            }
+                        }
+                    }
+                });
+
+                alertOptions.setCancelable(true);
+                alertOptions.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                alertOptions.show();
+
+
+//                String arrayid = nsPlayer.get_id();
+//                if (dynaArray.containsContributingArray(arrayid)) {
+//                    dynaArray.removeContributingArray(arrayid);
+//                } else {
+//                    List<SearchEntry> keys = new ArrayList<SearchEntry>();
+//                    keys.add(new SearchEntry(SearchEntry.Type.STRING, "playerid", SearchEntry.Search.EQUAL, nsPlayer.get_id()));
+//                    List<Content> listContent = contentHelper.find(keys);
+//                    dynaArray.addContributingArray(listContent, 1, arrayid, 0.6, 0.05);
+//                }
+//                listViewContent.setAdapter(new ContentListAdapter(context, dynaArray.currentInternalItemArray()));
             }
         });
 
-        listViewContent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                final DynaArray.InternalItem item = (DynaArray.InternalItem) listViewContent.getItemAtPosition(i);
-                dynaArray.removeContributingArray(item.getArrayId());
-                listViewContent.setAdapter(new ContentListAdapter(context, dynaArray.currentInternalItemArray()));
-            }
-        });
+//        listViewContent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                final DynaArray.InternalItem item = (DynaArray.InternalItem) listViewContent.getItemAtPosition(i);
+//                dynaArray.removeContributingArray(item.getArrayId());
+//                listViewContent.setAdapter(new ContentListAdapter(context, dynaArray.currentInternalItemArray()));
+//            }
+//        });
 
         final Button btnStart = ((Button) rootView.findViewById(R.id.btnStart));
         btnStart.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
-                objCurPlayerTask = new PlayerTask(context, dynaArray.currentStringArray(), "SUPER");
-                objCurPlayerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//                objCurPlayerTask = new PlayerTask(context, dynaArray.currentStringArray(), "SUPER");
+//                objCurPlayerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
 
@@ -129,7 +182,6 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
     public void refresh() {
         final ListView listViewSubcat = ((ListView) rootView.findViewById(R.id.schedule_category_list));
         final ListView listViewItems = ((ListView) rootView.findViewById(R.id.schedule_subcategory_list));
-        final ListView listViewContent = ((ListView) rootView.findViewById(R.id.schedule_new_player_list));
 
         SQLiteDatabase database = this.databaseHelper.getReadableDatabase();
 
@@ -149,5 +201,12 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
 
         ArrayAdapter<String> adapterSubcat = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, listSubcat);
         listViewSubcat.setAdapter(adapterSubcat);
+
+        refreshContentList();
+    }
+
+    private void refreshContentList() {
+        List<Content> contents = contentHelper.findAll();
+        listViewContent.setAdapter(new ContentListAdapter(context, contents));
     }
 }
