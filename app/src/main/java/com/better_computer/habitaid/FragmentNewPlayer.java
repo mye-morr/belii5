@@ -1,6 +1,8 @@
 package com.better_computer.habitaid;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -38,8 +40,7 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
     protected PlayerHelper playerHelper;
     protected ContentHelper contentHelper;
 
-    protected volatile PlayerTask objCurPlayerTask;
-    //private DynaArray dynaArray = new DynaArray();
+    protected volatile SamplePlayerTask objCurPlayerTask;
     private ListView listViewContent;
 
     public FragmentNewPlayer() {
@@ -47,7 +48,6 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_schedule_new_player, container, false);
         this.rootView = view;
         return view;
@@ -161,8 +161,25 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
         btnStart.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
-//                objCurPlayerTask = new PlayerTask(context, dynaArray.currentStringArray(), "SUPER");
-//                objCurPlayerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                DynaArray dynaArray = ((MyApplication) getActivity().getApplication()).resetDynaArray();
+                List<SearchEntry> activePlayerkeys = new ArrayList<SearchEntry>();
+                activePlayerkeys.add(new SearchEntry(SearchEntry.Type.STRING, "_state", SearchEntry.Search.EQUAL, "active"));
+                List<NonSched> activePlayerList = playerHelper.find(activePlayerkeys);
+                for (NonSched item : activePlayerList) {
+                    Player activePlayer = (Player) item;
+                    List<SearchEntry> activeContentkeys = new ArrayList<SearchEntry>();
+                    activeContentkeys.add(new SearchEntry(SearchEntry.Type.STRING, "_state", SearchEntry.Search.EQUAL, "active"));
+                    activeContentkeys.add(new SearchEntry(SearchEntry.Type.STRING, "playerid", SearchEntry.Search.EQUAL, activePlayer.get_id()));
+                    List<Content> contentList = contentHelper.find(activeContentkeys);
+                    dynaArray.addContributingArray(contentList, activePlayer.getIntWt(), activePlayer.get_id(),
+                            activePlayer.getDoubleExtpct(), activePlayer.getDoubleExtthr());
+                }
+
+                if (objCurPlayerTask != null) {
+                    objCurPlayerTask.stop();
+                }
+                objCurPlayerTask = new SamplePlayerTask(context);
+                objCurPlayerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
 
@@ -224,5 +241,39 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
     private void refreshContentList() {
         List<Content> contents = contentHelper.findAll();
         listViewContent.setAdapter(new ContentListAdapter(context, contents));
+    }
+
+    private class SamplePlayerTask extends AsyncTask<Void, Void, Integer> {
+
+        private Context context;
+        private boolean stop = false;
+
+        SamplePlayerTask(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            DynaArray dynaArray = ((MyApplication)((Activity)context).getApplication()).getDynaArray();
+            while(!stop) {
+                String element = dynaArray.getRandomElement();
+                if (element == null) {
+                    // stop running
+                    return 0;
+                }
+
+                System.out.println("element : " + element);
+                try {
+                    Thread.sleep(1000L);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            return 0;
+        }
+
+        void stop() {
+            stop = true;
+        }
     }
 }

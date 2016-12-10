@@ -44,12 +44,24 @@ public class Player extends NonSched {
 
     public void setWt(String wt) { this.wt = wt; }
 
+    public int getIntWt() {
+        return Integer.parseInt(wt);
+    }
+
     public String getExtpct() { return extpct; }
 
     public void setExtpct(String extpct) { this.extpct = extpct; }
 
+    public double getDoubleExtpct() {
+        return Double.parseDouble(extpct);
+    }
+
     public String getExtthr() { return extthr; }
 
     public void setExtthr(String extthr) { this.extthr = extthr; }
+
+    public double getDoubleExtthr() {
+        return Double.parseDouble(extthr);
+    }
 
 }
