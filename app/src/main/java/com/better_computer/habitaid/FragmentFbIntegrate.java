@@ -1,10 +1,13 @@
 package com.better_computer.habitaid;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,6 +18,7 @@ import android.widget.TextView;
 
 import com.better_computer.habitaid.data.DatabaseHelper;
 import com.better_computer.habitaid.data.core.ScheduleHelper;
+import com.better_computer.habitaid.util.MarginDecoration;
 import com.better_computer.habitaid.util.StopwatchUtil;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -80,6 +84,11 @@ public class FragmentFbIntegrate extends AbstractBaseFragment {
                 }
             }
         });
+
+        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.squares);
+        recyclerView.addItemDecoration(new MarginDecoration(getActivity()));
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4));
+        recyclerView.setAdapter(new SquaresAdapter());
 
         return rootView;
     }
@@ -183,4 +192,52 @@ public class FragmentFbIntegrate extends AbstractBaseFragment {
             }
         }
     };
+
+    class SquaresAdapter extends RecyclerView.Adapter<SquaresAdapter.ViewHolder> {
+
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.list_item_square, parent, false);
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            holder.setData(position);
+        }
+
+        @Override
+        public int getItemCount() {
+            return 16;
+        }
+
+        class ViewHolder extends RecyclerView.ViewHolder {
+
+            TextView text1View;
+            TextView text2View;
+
+            public ViewHolder(View itemView) {
+                super(itemView);
+                text1View = (TextView) itemView.findViewById(R.id.text1);
+                text2View = (TextView) itemView.findViewById(R.id.text2);
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        CharSequence[] items = new CharSequence[] {text1View.getText(), text2View.getText()};
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+                        alertDialog.setItems(items, null);
+                        alertDialog.setCancelable(true);
+                        alertDialog.show();
+                    }
+                });
+            }
+
+            void setData(int data) {
+                text1View.setText("text1-" + data);
+                text2View.setText("text2-" + data);
+            }
+        }
+
+    }
 }
