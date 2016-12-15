@@ -256,7 +256,7 @@ public class NewWizardDialog extends WizardDialog {
 
                         ((MainActivity) (context)).sSelectedLibraryCat = sCategory;
 
-                        if (DatabaseHelper.getInstance().getHelper(NonSchedHelper.class).createOrUpdate(nonSched)) {
+                        if (DatabaseHelper.getInstance().getHelper(NonSchedHelper.class).createAndShift(nonSched)) {
                             Toast.makeText(context, "Self-talk saved.", Toast.LENGTH_SHORT).show();
                         }
                         else {
