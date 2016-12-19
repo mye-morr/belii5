@@ -175,19 +175,9 @@ public class NewWizardDialog extends WizardDialog {
         NonSchedHelper nonSchedHelper = DatabaseHelper.getInstance().getHelper(NonSchedHelper.class);
         List<SearchEntry> keys = new ArrayList<SearchEntry>();
 
-        if(name != null){
-            name = "%" + name + "%";
-        }
-        else{
-            name = "%";
-        }
-
         keys.add(new SearchEntry(SearchEntry.Type.STRING, "cat", SearchEntry.Search.EQUAL, "comtas"));
 
-        // helper is to search the database
         List<NonSched> listNsComTas = (List<NonSched>)(List<?>)nonSchedHelper.find(keys);
-
-        // adapter is to display in list-view duh
         ((ListView) dialog.findViewById(R.id.new_wizard_1step_comTas_listview)).setAdapter(new NonSchedListAdapter(context, listNsComTas));
     }
 
@@ -256,7 +246,8 @@ public class NewWizardDialog extends WizardDialog {
 
                         ((MainActivity) (context)).sSelectedLibraryCat = sCategory;
 
-                        if (DatabaseHelper.getInstance().getHelper(NonSchedHelper.class).createAndShift(nonSched)) {
+                        //!!! need another solution for editing :-\ createAndShift(NonSched model)
+                        if (DatabaseHelper.getInstance().getHelper(NonSchedHelper.class).createOrUpdate(nonSched)) {
                             Toast.makeText(context, "Self-talk saved.", Toast.LENGTH_SHORT).show();
                         }
                         else {

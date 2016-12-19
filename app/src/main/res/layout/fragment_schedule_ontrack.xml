@@ -31,11 +31,20 @@
         android:checked="true" />
 
 </LinearLayout>
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:id="@+id/schedule_list"
+        android:choiceMode="singleChoice"
+        tools:listitem="@layout/list_item_schedule"
+        android:background="@color/app_background" />
 
     <ListView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/schedule_list"
+        android:layout_height="0dp"
+        android:layout_weight="1.5"
+        android:id="@+id/arck_list"
         android:choiceMode="singleChoice"
         tools:listitem="@layout/list_item_schedule"
         android:background="@color/app_background" />

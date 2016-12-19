@@ -16,9 +16,13 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.better_computer.habitaid.data.DatabaseHelper;
+import com.better_computer.habitaid.data.SearchEntry;
+import com.better_computer.habitaid.data.core.NonSched;
+import com.better_computer.habitaid.data.core.NonSchedHelper;
 import com.better_computer.habitaid.data.core.Schedule;
 import com.better_computer.habitaid.data.core.ScheduleHelper;
 import com.better_computer.habitaid.form.NewWizardDialog;
+import com.better_computer.habitaid.form.schedule.NonSchedListAdapter;
 import com.better_computer.habitaid.form.schedule.ScheduleListAdapter;
 
 import java.util.ArrayList;
@@ -28,8 +32,10 @@ import java.util.List;
 
 public class FragmentOnTrack extends AbstractBaseFragment {
 
-    protected ScheduleHelper scheduleHelper;
     protected View rootView;
+
+    protected ScheduleHelper scheduleHelper;
+    protected NonSchedHelper nonSchedHelper;
 
     public FragmentOnTrack() {
     }
@@ -53,10 +59,12 @@ public class FragmentOnTrack extends AbstractBaseFragment {
         super.onViewCreated(rootView, savedInstanceState);
 
         this.scheduleHelper = DatabaseHelper.getInstance().getHelper(ScheduleHelper.class);
+        this.nonSchedHelper = DatabaseHelper.getInstance().getHelper(NonSchedHelper.class);
 
         final View dialog = rootView;
 
         final ListView listView = ((ListView) rootView.findViewById(R.id.schedule_list));
+        final ListView listViewArck = ((ListView) rootView.findViewById(R.id.arck_list));
 
         final ToggleButton btnOnTrack1 = ((ToggleButton) dialog.findViewById(R.id.btnOnTrack1));
         final ToggleButton btnOnTrack2 = ((ToggleButton) dialog.findViewById(R.id.btnOnTrack2));
@@ -66,16 +74,13 @@ public class FragmentOnTrack extends AbstractBaseFragment {
             public void onClick(View view) {
                 if(btnOnTrack1.isChecked()) {
                     btnOnTrack2.setChecked(false);
-
-                    List<Schedule> schedules =
-                            (List<Schedule>) (List<?>) scheduleHelper.findBy("subcategory", btnOnTrack1.getTextOn().toString());
-                    listView.setAdapter(new ScheduleListAdapter(context, schedules));
                 }
                 else {
                     btnOnTrack1.setChecked(true);
                 }
 
                 ((MainActivity) context).sSelectedEventsSubcat = btnOnTrack1.getTextOn().toString();
+                refresh();
             }
         });
 
@@ -84,16 +89,13 @@ public class FragmentOnTrack extends AbstractBaseFragment {
             public void onClick(View view) {
                 if(btnOnTrack2.isChecked()) {
                     btnOnTrack1.setChecked(false);
-
-                    List<Schedule> schedules =
-                            (List<Schedule>) (List<?>) scheduleHelper.findBy("subcategory", btnOnTrack2.getTextOn().toString());
-                    listView.setAdapter(new ScheduleListAdapter(context, schedules));
                 }
                 else {
                     btnOnTrack2.setChecked(true);
                 }
 
                 ((MainActivity) context).sSelectedEventsSubcat = btnOnTrack2.getTextOn().toString();
+                refresh();
             }
         });
 
@@ -104,6 +106,7 @@ public class FragmentOnTrack extends AbstractBaseFragment {
                 AlertDialog.Builder alertOptions = new AlertDialog.Builder(context);
                 List<String> optsList = new ArrayList<String>();
 
+                optsList.add("Move To");
                 optsList.add("Edit");
                 optsList.add("Postpone");
 
@@ -146,6 +149,31 @@ public class FragmentOnTrack extends AbstractBaseFragment {
                             });
 
                             postponeMinutes.show();
+                        } else if (options[i].equalsIgnoreCase("MOVE TO")) {
+                            NonSched nsItem = new NonSched();
+                            nsItem.setCat("arck");
+
+                            String sActiveSubcategory = "";
+                            if(btnOnTrack1.isChecked()) {
+                                sActiveSubcategory = btnOnTrack1.getTextOn().toString();
+                            }
+                            else {
+                                sActiveSubcategory = btnOnTrack2.getTextOn().toString();
+                            }
+
+                            nsItem.setSubcat(sActiveSubcategory);
+                            nsItem.setContent(schedule.getMessage());
+
+                            // returns boolean
+                            if (DatabaseHelper.getInstance().getHelper(NonSchedHelper.class).createOrUpdate(nsItem)) {
+                                Toast.makeText(context, "Moved schedule.", Toast.LENGTH_SHORT).show();
+                                scheduleHelper.delete(schedule.get_id());
+                            }
+                            else {
+                                Toast.makeText(context, "Schedule moving failed.", Toast.LENGTH_SHORT).show();
+                            }
+
+                            ((MainActivity) context).resetup();
 
                         } else if (options[i].equalsIgnoreCase("EDIT")) {
                             new NewWizardDialog(context, schedule).show();
@@ -215,6 +243,86 @@ public class FragmentOnTrack extends AbstractBaseFragment {
             }
         });
 
+        listViewArck.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                final NonSched nsItem = (NonSched) listViewArck.getItemAtPosition(position);
+
+                AlertDialog.Builder alertOptions = new AlertDialog.Builder(context);
+                List<String> optsList = new ArrayList<String>();
+
+                optsList.add("Move To");
+                optsList.add("Delete");
+
+                final String[] options = optsList.toArray(new String[]{});
+                alertOptions.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, android.R.id.text1, options), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        if (options[i].equalsIgnoreCase("MOVE TO")) {
+                            Schedule schedule = new Schedule();
+                            schedule.setReceiver("");
+                            schedule.setReceiverName("");
+
+                            schedule.setCategory("ontrack");
+
+                            String sActiveSubcategory = "";
+                            if(btnOnTrack1.isChecked()) {
+                                sActiveSubcategory = btnOnTrack1.getTextOn().toString();
+                            }
+                            else {
+                                sActiveSubcategory = btnOnTrack2.getTextOn().toString();
+                            }
+                            schedule.setSubcategory(sActiveSubcategory);
+
+                            Calendar instCal = Calendar.getInstance();
+                            instCal.add(Calendar.MINUTE, 1);
+
+                            schedule.getNextDue().set(Calendar.HOUR_OF_DAY, instCal.get(Calendar.HOUR_OF_DAY));
+                            schedule.getNextDue().set(Calendar.MINUTE, instCal.get(Calendar.MINUTE));
+
+                            schedule.setRemindInterval("5");
+
+                            schedule.set_frame("");
+                            schedule.set_state("active");
+                            schedule.setPrepCount("0");
+                            schedule.setRepeatEnable("false");
+
+                            schedule.setNextExecute(schedule.getNextDue());
+                            schedule.setMessage(nsItem.getContent());
+
+                            // returns boolean
+                            if (DatabaseHelper.getInstance().getHelper(ScheduleHelper.class).createOrUpdate(schedule)) {
+                                Toast.makeText(context, "Added schedule.", Toast.LENGTH_SHORT).show();
+                                DatabaseHelper.getInstance().getHelper(NonSchedHelper.class).delete(nsItem.get_id());
+                            } else {
+                                Toast.makeText(context, "Schedule saving failed.", Toast.LENGTH_SHORT).show();
+                            }
+
+                            ((MainActivity) context).resetup();
+                            dialogInterface.dismiss();
+                        }
+                        else if (options[i].equalsIgnoreCase("DELETE")) {
+                            Toast.makeText(context, "Schedule deleted.", Toast.LENGTH_SHORT).show();
+                            DatabaseHelper.getInstance().getHelper(NonSchedHelper.class).delete(nsItem.get_id());
+
+                            ((MainActivity) context).resetup();
+                            dialogInterface.dismiss();
+                        }
+                    }
+                });
+
+                alertOptions.setCancelable(true);
+                alertOptions.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                alertOptions.show();
+            }
+        });
+
         refresh();
    }
 
@@ -224,16 +332,25 @@ public class FragmentOnTrack extends AbstractBaseFragment {
         final ToggleButton btnOnTrack1 = ((ToggleButton) dialog.findViewById(R.id.btnOnTrack1));
         final ToggleButton btnOnTrack2 = ((ToggleButton) dialog.findViewById(R.id.btnOnTrack2));
         final ListView listView = ((ListView) rootView.findViewById(R.id.schedule_list));
+        final ListView listViewArck = ((ListView) rootView.findViewById(R.id.arck_list));
+
+        List<SearchEntry> keys = new ArrayList<SearchEntry>();
+        keys.add(new SearchEntry(SearchEntry.Type.STRING, "cat", SearchEntry.Search.EQUAL, "arck"));
 
         String sActiveSubcategory = "";
         if(btnOnTrack1.isChecked()) {
             sActiveSubcategory = btnOnTrack1.getTextOn().toString();
+            keys.add(new SearchEntry(SearchEntry.Type.STRING, "subcat", SearchEntry.Search.EQUAL, btnOnTrack1.getTextOn().toString()));
         }
         else {
             sActiveSubcategory = btnOnTrack2.getTextOn().toString();
+            keys.add(new SearchEntry(SearchEntry.Type.STRING, "subcat", SearchEntry.Search.EQUAL, btnOnTrack2.getTextOn().toString()));
         }
 
         List<Schedule> schedules = (List<Schedule>) (List<?>) scheduleHelper.findBy("subcategory", sActiveSubcategory);
         listView.setAdapter(new ScheduleListAdapter(context, schedules));
+
+        List<NonSched> listNsArck = (List<NonSched>)(List<?>)nonSchedHelper.find(keys);
+        listViewArck.setAdapter(new NonSchedListAdapter(context, listNsArck));
     }
 }
