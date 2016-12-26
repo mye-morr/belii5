@@ -19,7 +19,6 @@ import android.widget.Toast;
 import com.better_computer.habitaid.data.DatabaseHelper;
 import com.better_computer.habitaid.data.core.Games;
 import com.better_computer.habitaid.data.core.GamesHelper;
-import com.better_computer.habitaid.data.core.NonSchedHelper;
 import com.better_computer.habitaid.form.schedule.GamesListAdapter;
 
 import java.util.ArrayList;
@@ -28,7 +27,6 @@ import java.util.List;
 public class FragmentGames extends AbstractBaseFragment {
 
     protected DatabaseHelper databaseHelper;
-    protected NonSchedHelper nonSchedHelper;
 
     @Override
     public void refresh() {
@@ -78,7 +76,6 @@ public class FragmentGames extends AbstractBaseFragment {
         super.onViewCreated(rootView, savedInstanceState);
 
         this.databaseHelper = DatabaseHelper.getInstance();
-        this.nonSchedHelper = DatabaseHelper.getInstance().getHelper(NonSchedHelper.class);
         this.gamesHelper = DatabaseHelper.getInstance().getHelper(GamesHelper.class);
 
         final ListView listViewSt = ((ListView) rootView.findViewById(R.id.schedule_list));
@@ -99,7 +96,7 @@ public class FragmentGames extends AbstractBaseFragment {
 
                         if (options[i].equalsIgnoreCase("DELETE")) {
                             Toast.makeText(context, "Schedule deleted.", Toast.LENGTH_SHORT).show();
-                            nonSchedHelper.delete(st.get_id());
+                            gamesHelper.delete(st.get_id());
                             refresh();
                             dialogInterface.dismiss();
                         }
