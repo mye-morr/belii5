@@ -8,10 +8,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.List;
-
 import com.better_computer.habitaid.R;
 import com.better_computer.habitaid.data.core.Games;
+
+import java.util.List;
 
 public class GamesListAdapter extends ArrayAdapter<Games> {
 
@@ -32,14 +32,15 @@ public class GamesListAdapter extends ArrayAdapter<Games> {
 
         Games game = games.get(position);
         String sCat = game.getCat();
-        String sPts = game.getPts();
+        int iPts = game.getPts();
 
         if (sCat.length() > 0) {
             sCat = sCat + ": ";
         }
 
-        if (sPts.length() > 0) {
-            sPts = " (" + sPts + ")";
+        String sPts = "";
+        if (iPts != 0) {
+            sPts = " (" + String.valueOf(iPts) + ")";
         }
 
         ((TextView) convertView.findViewById(R.id.schedule_item_summary)).setText(sCat + game.getContent() + sPts);

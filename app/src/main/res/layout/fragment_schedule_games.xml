@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1">
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/pts_los"
+            android:layout_weight="0.33"
+            android:gravity="center"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:contextClickable="false"
+            android:longClickable="false"
+            android:linksClickable="false"
+            android:textIsSelectable="false" />
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/pts_wa"
+            android:layout_weight="0.33"
+            android:gravity="center"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:contextClickable="false"
+            android:longClickable="false"
+            android:linksClickable="false"
+            android:textIsSelectable="false" />
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/pts_stru"
+            android:layout_weight="0.33"
+            android:gravity="center"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:clickable="false"
+            android:contextClickable="false"
+            android:cursorVisible="false"
+            android:longClickable="false"
+            android:linksClickable="false"
+            android:textIsSelectable="false" />
+    </LinearLayout>
+
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/schedule_list"
+        android:choiceMode="singleChoice"
+        tools:listitem="@layout/list_item_schedule"
+        android:background="@color/app_background" />
+</LinearLayout>

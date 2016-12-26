@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     public String sSelectedEventsSubcat = "";
     public String sSelectedPlayerCat = "";
     public String sSelectedPlayerSubcat = "";
+    public String sGamesLastStatus = "";
     private int iLastPosition = 0;
 
     public HistoryPopulator getHistoryPopulator() {

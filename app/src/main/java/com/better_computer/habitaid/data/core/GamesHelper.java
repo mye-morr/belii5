@@ -14,7 +14,7 @@ public class GamesHelper extends AbstractHelper<Games>{
         this.columns.add("subcat TEXT");
         this.columns.add("name TEXT");
         this.columns.add("content TEXT");
-        this.columns.add("pts TEXT");
+        this.columns.add("pts INTEGER");
     }
 
     @Override

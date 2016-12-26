@@ -1,7 +1,9 @@
 package com.better_computer.habitaid;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,7 +11,12 @@ import android.support.v4.app.Fragment;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.better_computer.habitaid.data.SearchEntry;
+import com.better_computer.habitaid.data.core.GamesHelper;
 import com.better_computer.habitaid.form.NewWizardDialog;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by tedwei on 11/30/16.
@@ -23,6 +30,8 @@ abstract public class AbstractBaseFragment extends Fragment {
 
     protected Context context;
     protected View rootView;
+
+    protected GamesHelper gamesHelper;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,6 +56,9 @@ abstract public class AbstractBaseFragment extends Fragment {
                 return true;
             case R.id.action_clear_history:
                 ((MainActivity)context).getHistoryPopulator().setupClearHistory();
+                return true;
+            case R.id.action_clear_games:
+                clearGames();
                 return true;
             case R.id.action_refresh:
                 ((MainActivity)context).resetup();
@@ -77,4 +89,27 @@ abstract public class AbstractBaseFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    public void clearGames(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Clear Games");
+        builder.setMessage("Are you sure that you want to delete the games history?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                List<SearchEntry> keys = new ArrayList<SearchEntry>();
+                List<String> listCat = new ArrayList<String>();
+                listCat.add("%");
+                keys.add(new SearchEntry(SearchEntry.Type.STRING, "cat", SearchEntry.Search.LIKE, listCat));
+                gamesHelper.delete(keys);
+                ((MainActivity) context).resetup();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        builder.show();
+    }
 }

@@ -4,13 +4,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-/**
- * Created by tedwei on 12/7/16.
- */
-
 public class StopwatchUtil {
 
     private static final String STOPWATCH_START_TIME = "StopwatchUtil_STOPWATCH_START_TIME";
+    private static final String STOPWATCH_START_STATUS = "StopwatchUtil_STOPWATCH_START_STATUS";
     private static final String STOPWATCH_STOP_TIME = "StopwatchUtil_STOPWATCH_STOP_TIME";
 
     public static long resetStopwatchStartTime(Context context) {
@@ -20,26 +17,44 @@ public class StopwatchUtil {
         return time;
     }
 
-    public static void setStopwatchStartTime(Context context, long period) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putLong(STOPWATCH_START_TIME, period).commit();
+    public static long resetStopwatchStartTime(Context context, String desc) {
+        long time = System.currentTimeMillis();
+        setStopwatchStartTime(context, time, desc);
+        setStopwatchStopTime(context, -1);
+        return time;
     }
 
-    public static long getStopwatchStartTime(Context context) {
+    private static void setStopwatchStartTime(Context context, long period) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        long time = sp.getLong(STOPWATCH_START_TIME, -1);
-        return time;
+        sp.edit().putLong(STOPWATCH_START_TIME, period).apply();
+    }
+
+    private static void setStopwatchStartTime(Context context, long period, String desc) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit()
+                .putLong(STOPWATCH_START_TIME, period)
+                .putString(STOPWATCH_START_STATUS, desc)
+                .apply();
+    }
+
+    private static long getStopwatchStartTime(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getLong(STOPWATCH_START_TIME, -1);
     }
 
     public static void setStopwatchStopTime(Context context, long period) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putLong(STOPWATCH_STOP_TIME, period).commit();
+        sp.edit().putLong(STOPWATCH_STOP_TIME, period).apply();
     }
 
     public static long getStopwatchStopTime(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        long time = sp.getLong(STOPWATCH_STOP_TIME, -1);
-        return time;
+        return sp.getLong(STOPWATCH_STOP_TIME, -1);
+    }
+
+    public static String getStopwatchLastStatus(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getString(STOPWATCH_START_STATUS, "");
     }
 
     public static long getStopwatchPassedTime(Context context) {

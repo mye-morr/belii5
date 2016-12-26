@@ -2,10 +2,10 @@ package com.better_computer.habitaid.data.core;
 
 import android.content.ContentValues;
 
+import com.better_computer.habitaid.data.AbstractModel;
+
 import java.util.Calendar;
 import java.util.Map;
-
-import com.better_computer.habitaid.data.AbstractModel;
 
 public class Games extends AbstractModel{
 
@@ -14,7 +14,7 @@ public class Games extends AbstractModel{
     private String subcat = "";
     private String name = "";
     private String content = "";
-    private String pts = "";
+    private int pts = 0;
 
     public ContentValues getContentValues() {
         ContentValues contentValues = super.getContentValues();
@@ -38,7 +38,7 @@ public class Games extends AbstractModel{
         subcat = fetchData(data, "subcat");
         name = fetchData(data, "name");
         content = fetchData(data, "content");
-        pts = fetchData(data, "pts", "0");
+        pts = fetchDataInteger(data, "pts");
     }
 
     public Calendar getTimestamp() {
@@ -77,10 +77,10 @@ public class Games extends AbstractModel{
         this.content = content;
     }
 
-    public String getPts() {
+    public int getPts() {
         return pts;
     }
 
-    public void setPts(String pts) { this.pts = pts; }
+    public void setPts(int pts) { this.pts = pts; }
 
 }

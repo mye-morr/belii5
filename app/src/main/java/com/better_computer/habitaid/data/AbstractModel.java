@@ -91,7 +91,7 @@ public class AbstractModel {
             return null;
         }else{
             try{
-                return (int)Double.parseDouble(value);
+                return Integer.parseInt(value);
             }catch (Exception e){
                 return null;
             }
