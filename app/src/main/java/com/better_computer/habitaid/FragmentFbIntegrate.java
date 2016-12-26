@@ -55,20 +55,6 @@ public class FragmentFbIntegrate extends AbstractBaseFragment {
 
         stopwatchView = (TextView) rootView.findViewById(R.id.stopwatch);
 
-        rootView.findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i1 = new Intent();
-                i1.setAction("com.example.SendBroadcast.pressed_btn");
-                i1.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-                i1.putExtra("CATEGORY_PRESSED", "status");
-                i1.putExtra("STRING_PRESSED", "strstr");
-                i1.putExtra("POINTS_PRESSED", "5");
-                i1.putExtra("LAST_STATUS", ((MainActivity) context).sGamesLastStatus);
-                context.sendBroadcast(i1);
-            }
-        });
-
         rootView.findViewById(R.id.start).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
