@@ -152,9 +152,9 @@ public class NonSchedRecyclerViewAdapter extends RecyclerView.Adapter<NonSchedRe
                                         PlayerHelper playerHelper = DatabaseHelper.getInstance().getHelper(PlayerHelper.class);
                                         Player player = new Player();
                                         player.copyFromNonSched(item);
-                                        player.setWt("0");
-                                        player.setExtpct("0");
-                                        player.setExtthr("0");
+                                        player.setWt("1");
+                                        player.setExtpct("0.6");
+                                        player.setExtthr("0.5");
                                         player.setSubcat(subcat);
                                         player.setName(name);
                                         boolean result = playerHelper.createOrUpdateBySubcatAndName(player);
