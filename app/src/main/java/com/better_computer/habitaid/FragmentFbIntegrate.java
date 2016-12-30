@@ -377,14 +377,8 @@ public class FragmentFbIntegrate extends AbstractBaseFragment {
                     nonSched.setNotes(rs.getString("notes"));
                     nonSchedHelper.create(nonSched);
                 }
-
-                connection.commit();
             } catch (Exception ex) {
-                try {
-                    connection.rollback();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                ex.printStackTrace();
             } finally {
                 try {
                     stmt.close();
