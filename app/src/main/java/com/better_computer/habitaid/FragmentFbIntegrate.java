@@ -3,6 +3,7 @@ package com.better_computer.habitaid;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.better_computer.habitaid.data.DatabaseHelper;
+import com.better_computer.habitaid.data.SearchEntry;
+import com.better_computer.habitaid.data.core.NonSched;
+import com.better_computer.habitaid.data.core.NonSchedHelper;
 import com.better_computer.habitaid.data.core.ScheduleHelper;
 import com.better_computer.habitaid.util.MarginDecoration;
 import com.better_computer.habitaid.util.StopwatchUtil;
@@ -28,6 +32,15 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FragmentFbIntegrate extends AbstractBaseFragment {
 
@@ -79,6 +92,20 @@ public class FragmentFbIntegrate extends AbstractBaseFragment {
                     String strPassedTime = String.format("%d:%02d", passedSeconds / 60, passedSeconds % 60);
                     stopwatchView.setText(strPassedTime);
                 }
+            }
+        });
+
+        rootView.findViewById(R.id.sync_2_client).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new Sync2ClientTask().execute();
+            }
+        });
+
+        rootView.findViewById(R.id.sync_2_server).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new Sync2ServerTask().execute();
             }
         });
 
@@ -236,5 +263,141 @@ public class FragmentFbIntegrate extends AbstractBaseFragment {
             }
         }
 
+    }
+
+    private Connection openConnection() {
+        String ipaddress = "184.168.194.77";
+        String db = "narfdaddy2";
+        String username = "narfdaddy2";
+        String password = "TreeDemo1";
+
+        Connection connection = null;
+        String ConnectionURL = null;
+        try {
+            Class.forName("net.sourceforge.jtds.jdbc.Driver");
+            ConnectionURL = "jdbc:jtds:sqlserver://" + ipaddress + ";"
+
+                    + "databaseName=" + db + ";user=" + username
+                    + ";password=" + password + ";";
+            connection = DriverManager.getConnection(ConnectionURL);
+            return connection;
+        } catch (SQLException se) {
+            Log.e("ERRO", se.getMessage());
+        } catch (ClassNotFoundException e) {
+            Log.e("ERRO", e.getMessage());
+        } catch (Exception e) {
+            Log.e("ERRO", e.getMessage());
+        }
+
+        return null;
+    }
+
+    private class Sync2ServerTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            NonSchedHelper nonSchedHelper = DatabaseHelper.getInstance().getHelper(NonSchedHelper.class);
+            List<NonSched> list = nonSchedHelper.findAll();
+
+            Connection connection = null;
+            PreparedStatement stmt = null;
+            try {
+                connection = openConnection();
+                connection.setAutoCommit(false);
+
+                String sql = "DELETE FROM core_tbl_nonsched";
+                stmt = connection.prepareStatement(sql);
+                stmt.execute();
+
+                sql = "INSERT INTO core_tbl_nonsched (_id ,_frame ,_state ,cat ,subcat ,subsub ,iprio ,name ,abbrev ,content ,notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                stmt = connection.prepareStatement(sql);
+                for (NonSched nonSched : list) {
+                    stmt.setString(1, nonSched.get_id());
+                    stmt.setString(2, nonSched.get_frame());
+                    stmt.setString(3, nonSched.get_state());
+                    stmt.setString(4, nonSched.getCat());
+                    stmt.setString(5, nonSched.getSubcat());
+                    stmt.setString(6, nonSched.getSubsub());
+                    stmt.setString(7, nonSched.getIprio());
+                    stmt.setString(8, nonSched.getName());
+                    stmt.setString(9, nonSched.getAbbrev());
+                    stmt.setString(10, nonSched.getContent());
+                    stmt.setString(11, nonSched.getNotes());
+                    stmt.executeUpdate();
+                }
+
+                connection.commit();
+            } catch (Exception ex) {
+                try {
+                    connection.rollback();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } finally {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+    }
+
+    private class Sync2ClientTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            NonSchedHelper nonSchedHelper = DatabaseHelper.getInstance().getHelper(NonSchedHelper.class);
+            nonSchedHelper.delete(new ArrayList<SearchEntry>());    // delete all
+
+            Connection connection = null;
+            Statement stmt = null;
+            try {
+                connection = openConnection();
+
+                String sql = "SELECT * FROM core_tbl_nonsched";
+                stmt = connection.createStatement();
+                ResultSet rs = stmt.executeQuery(sql);
+                while (rs.next()) {
+                    NonSched nonSched = new NonSched();
+                    nonSched.set_id(rs.getString("_id"));
+                    nonSched.set_frame(rs.getString("_frame"));
+                    nonSched.set_state(rs.getString("_state"));
+                    nonSched.setCat(rs.getString("cat"));
+                    nonSched.setSubcat(rs.getString("subcat"));
+                    nonSched.setSubsub(rs.getString("subsub"));
+                    nonSched.setIprio(rs.getString("iprio"));
+                    nonSched.setName(rs.getString("name"));
+                    nonSched.setAbbrev(rs.getString("abbrev"));
+                    nonSched.setContent(rs.getString("content"));
+                    nonSched.setNotes(rs.getString("notes"));
+                    nonSchedHelper.create(nonSched);
+                }
+
+                connection.commit();
+            } catch (Exception ex) {
+                try {
+                    connection.rollback();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } finally {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
     }
 }
