@@ -99,6 +99,8 @@
             </intent-filter>
         </receiver>
 
+        <service android:name="com.better_computer.habitaid.service.PlayerService"/>
+
     </application>
     <!-- USER PERMISSION -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
