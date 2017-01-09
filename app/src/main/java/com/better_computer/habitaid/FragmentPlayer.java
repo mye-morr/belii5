@@ -16,6 +16,7 @@ import com.better_computer.habitaid.data.DatabaseHelper;
 import com.better_computer.habitaid.data.core.NonSched;
 import com.better_computer.habitaid.data.core.NonSchedHelper;
 import com.better_computer.habitaid.form.schedule.NonSchedListAdapter;
+import com.better_computer.habitaid.service.PlayerService;
 import com.better_computer.habitaid.util.PlayerTask;
 
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.List;
 public class FragmentPlayer extends AbstractBaseFragment {
 
     protected NonSchedHelper nonSchedHelper;
-    protected volatile PlayerTask objCurPlayerTask;
+//    protected volatile PlayerTask objCurPlayerTask;
 
     @Override
     public void refresh() {
@@ -98,8 +99,9 @@ public class FragmentPlayer extends AbstractBaseFragment {
         btnSuper.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
-                objCurPlayerTask = new PlayerTask(context, etPlayerContent.getText().toString().split("\\n"), "SUPER");
-                objCurPlayerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                PlayerService.startService(context, etPlayerContent.getText().toString().split("\\n"), "SUPER");
+//                objCurPlayerTask = new PlayerTask(context, etPlayerContent.getText().toString().split("\\n"), "SUPER");
+//                objCurPlayerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
 
@@ -107,8 +109,9 @@ public class FragmentPlayer extends AbstractBaseFragment {
         btnHigh.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
-                objCurPlayerTask = new PlayerTask(context, etPlayerContent.getText().toString().split("\\n"), "HIGH");
-                objCurPlayerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                PlayerService.startService(context, etPlayerContent.getText().toString().split("\\n"), "HIGH");
+//                objCurPlayerTask = new PlayerTask(context, etPlayerContent.getText().toString().split("\\n"), "HIGH");
+//                objCurPlayerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
 
@@ -116,8 +119,9 @@ public class FragmentPlayer extends AbstractBaseFragment {
         btnMedium.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
-                objCurPlayerTask = new PlayerTask(context, etPlayerContent.getText().toString().split("\\n"), "MEDIUM");
-                objCurPlayerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                PlayerService.startService(context, etPlayerContent.getText().toString().split("\\n"), "MEDIUM");
+//                objCurPlayerTask = new PlayerTask(context, etPlayerContent.getText().toString().split("\\n"), "MEDIUM");
+//                objCurPlayerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
 
@@ -125,8 +129,9 @@ public class FragmentPlayer extends AbstractBaseFragment {
         btnLow.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
-                objCurPlayerTask = new PlayerTask(context, etPlayerContent.getText().toString().split("\\n"), "LOW");
-                objCurPlayerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                PlayerService.startService(context, etPlayerContent.getText().toString().split("\\n"), "LOW");
+//                objCurPlayerTask = new PlayerTask(context, etPlayerContent.getText().toString().split("\\n"), "LOW");
+//                objCurPlayerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
 
@@ -134,9 +139,10 @@ public class FragmentPlayer extends AbstractBaseFragment {
         btnStopPlayer.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
-                if (objCurPlayerTask != null) {
-                    objCurPlayerTask.cancel(true);
-                }
+//                if (objCurPlayerTask != null) {
+//                    objCurPlayerTask.cancel(true);
+//                }
+                PlayerService.stopService(context);
 
                 Toast.makeText(context, "thanks for playing", Toast.LENGTH_SHORT).show();
             }
