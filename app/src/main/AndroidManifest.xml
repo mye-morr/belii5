@@ -100,6 +100,7 @@
         </receiver>
 
         <service android:name="com.better_computer.habitaid.service.PlayerService"/>
+        <service android:name="com.better_computer.habitaid.service.PlayerServiceStatic"/>
 
     </application>
     <!-- USER PERMISSION -->

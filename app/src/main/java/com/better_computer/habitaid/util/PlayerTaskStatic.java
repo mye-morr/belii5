@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class PlayerTask extends AsyncTask<Void, Void, Integer> {
+public class PlayerTaskStatic extends AsyncTask<Void, Void, Integer> {
     private Context context;
     private String[] sxItems;
     private Integer[] ixRandIdx;
@@ -17,7 +17,7 @@ public class PlayerTask extends AsyncTask<Void, Void, Integer> {
     private int nxt;
     private int iMinBreak;
 
-    public PlayerTask(Context context, String[] sxItems, String sRate) {
+    public PlayerTaskStatic(Context context, String[] sxItems, String sRate) {
 
         switch(sRate) {
             case "SUPER":

@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,13 +19,9 @@ import com.better_computer.habitaid.data.SearchEntry;
 import com.better_computer.habitaid.data.core.Content;
 import com.better_computer.habitaid.data.core.ContentHelper;
 import com.better_computer.habitaid.data.core.NonSched;
-import com.better_computer.habitaid.data.core.Player;
 import com.better_computer.habitaid.data.core.PlayerHelper;
-import com.better_computer.habitaid.form.NewWizardDialog;
 import com.better_computer.habitaid.form.schedule.ContentListAdapter;
 import com.better_computer.habitaid.form.schedule.NonSchedListAdapter;
-import com.better_computer.habitaid.player.PlayerNamePickerFragment;
-import com.better_computer.habitaid.util.DynaArray;
 import com.better_computer.habitaid.util.PlayerTask;
 
 import java.util.ArrayList;
@@ -133,7 +128,6 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
                     }
                 });
                 alertOptions.show();
-
 
 //                String arrayid = nsPlayer.get_id();
 //                if (dynaArray.containsContributingArray(arrayid)) {
