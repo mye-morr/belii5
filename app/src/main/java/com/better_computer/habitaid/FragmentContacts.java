@@ -60,6 +60,9 @@ public class FragmentContacts extends AbstractBaseFragment {
         final ToggleButton btnContacts2 = ((ToggleButton) dialog.findViewById(R.id.btnContacts2));
         final ToggleButton btnContacts3 = ((ToggleButton) dialog.findViewById(R.id.btnContacts3));
 
+        // default to left-tab on open-view
+        ((MainActivity) context).sSelectedContactsSubcat = btnContacts1.getTextOn().toString();
+
         btnContacts1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

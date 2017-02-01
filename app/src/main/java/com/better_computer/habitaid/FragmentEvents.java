@@ -62,6 +62,9 @@ public class FragmentEvents extends AbstractBaseFragment {
         final ToggleButton btnEvents4 = ((ToggleButton) dialog.findViewById(R.id.btnEvents4));
         final ToggleButton btnEvents5 = ((ToggleButton) dialog.findViewById(R.id.btnEvents5));
 
+        // default to left tab on open-view
+        ((MainActivity) context).sSelectedEventsSubcat = btnEvents1.getTextOn().toString();
+
         btnEvents1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -88,6 +88,9 @@ public class FragmentOnTrack extends AbstractBaseFragment {
         btnOnTrack1 = ((ToggleButton) dialog.findViewById(R.id.btnOnTrack1));
         btnOnTrack2 = ((ToggleButton) dialog.findViewById(R.id.btnOnTrack2));
 
+        // default to right tab on open-view
+        ((MainActivity) context).sSelectedEventsSubcat = btnOnTrack2.getTextOn().toString();
+        
         btnOnTrack1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -154,7 +157,7 @@ public class FragmentOnTrack extends AbstractBaseFragment {
                             postponeMinutes.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Calendar nextExecute = schedule.getNextExecute();
+                                    Calendar nextExecute = Calendar.getInstance();
                                     nextExecute.add(Calendar.MINUTE, Integer.parseInt(input.getText().toString()));
                                     schedule.setNextExecute(nextExecute);
                                     scheduleHelper.update(schedule);
@@ -172,15 +175,7 @@ public class FragmentOnTrack extends AbstractBaseFragment {
                             NonSched nsItem = new NonSched();
                             nsItem.setCat("arck");
 
-                            String sActiveSubcategory = "";
-                            if(btnOnTrack1.isChecked()) {
-                                sActiveSubcategory = btnOnTrack1.getTextOn().toString();
-                            }
-                            else {
-                                sActiveSubcategory = btnOnTrack2.getTextOn().toString();
-                            }
-
-                            nsItem.setSubcat(sActiveSubcategory);
+                            nsItem.setSubcat(((MainActivity) context).sSelectedEventsSubcat);
                             nsItem.setContent(schedule.getMessage());
 
                             // returns boolean
@@ -386,47 +381,60 @@ public class FragmentOnTrack extends AbstractBaseFragment {
                             public void onClick(DialogInterface dialogInterface, int i) {
 
                                 if (options[i].equalsIgnoreCase("MOVE TO")) {
-                                    Schedule schedule = new Schedule();
-                                    schedule.setReceiver("");
-                                    schedule.setReceiverName("");
 
-                                    schedule.setCategory("ontrack");
+                                    AlertDialog.Builder inputInterval = new AlertDialog.Builder(context);
+                                    inputInterval.setTitle("Interval");
+                                    inputInterval.setMessage("Minutes; varia");
+                                    final EditText input = new EditText(context);
+                                    inputInterval.setView(input);
 
-                                    String sActiveSubcategory = "";
-                                    if(btnOnTrack1.isChecked()) {
-                                        sActiveSubcategory = btnOnTrack1.getTextOn().toString();
-                                    }
-                                    else {
-                                        sActiveSubcategory = btnOnTrack2.getTextOn().toString();
-                                    }
-                                    schedule.setSubcategory(sActiveSubcategory);
+                                    inputInterval.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
 
-                                    Calendar instCal = Calendar.getInstance();
-                                    instCal.add(Calendar.MINUTE, 1);
+                                            Schedule schedule = new Schedule();
+                                            schedule.setReceiver("");
+                                            schedule.setReceiverName("");
 
-                                    schedule.getNextDue().set(Calendar.HOUR_OF_DAY, instCal.get(Calendar.HOUR_OF_DAY));
-                                    schedule.getNextDue().set(Calendar.MINUTE, instCal.get(Calendar.MINUTE));
+                                            schedule.setCategory("ontrack");
+                                            schedule.setSubcategory(((MainActivity) context).sSelectedEventsSubcat);
 
-                                    schedule.setRemindInterval("5");
+                                            Calendar instCal = Calendar.getInstance();
+                                            instCal.add(Calendar.MINUTE, 1);
 
-                                    schedule.set_frame("");
-                                    schedule.set_state("active");
-                                    schedule.setPrepCount("0");
-                                    schedule.setRepeatEnable("false");
+                                            schedule.getNextDue().set(Calendar.HOUR_OF_DAY, instCal.get(Calendar.HOUR_OF_DAY));
+                                            schedule.getNextDue().set(Calendar.MINUTE, instCal.get(Calendar.MINUTE));
 
-                                    schedule.setNextExecute(schedule.getNextDue());
-                                    schedule.setMessage(nsItem.getContent());
+                                            schedule.setRemindInterval(input.getText().toString());
 
-                                    // returns boolean
-                                    if (DatabaseHelper.getInstance().getHelper(ScheduleHelper.class).createOrUpdate(schedule)) {
-                                        Toast.makeText(context, "Added schedule.", Toast.LENGTH_SHORT).show();
-                                        DatabaseHelper.getInstance().getHelper(NonSchedHelper.class).delete(nsItem.get_id());
-                                    } else {
-                                        Toast.makeText(context, "Schedule saving failed.", Toast.LENGTH_SHORT).show();
-                                    }
+                                            schedule.set_frame("");
+                                            schedule.set_state("active");
+                                            schedule.setPrepCount("0");
+                                            schedule.setRepeatEnable("false");
 
-                                    ((MainActivity) context).resetup();
-                                    dialogInterface.dismiss();
+                                            schedule.setNextExecute(schedule.getNextDue());
+                                            schedule.setMessage(nsItem.getContent());
+
+                                            // returns boolean
+                                            if (DatabaseHelper.getInstance().getHelper(ScheduleHelper.class).createOrUpdate(schedule)) {
+                                                Toast.makeText(context, "Added schedule.", Toast.LENGTH_SHORT).show();
+                                                DatabaseHelper.getInstance().getHelper(NonSchedHelper.class).delete(nsItem.get_id());
+                                            } else {
+                                                Toast.makeText(context, "Schedule saving failed.", Toast.LENGTH_SHORT).show();
+                                            }
+
+                                            ((MainActivity) context).resetup();
+
+                                        }
+                                    });
+                                    inputInterval.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel();
+                                        }
+                                    });
+
+                                    inputInterval.show();
                                 }
                                 else if (options[i].equalsIgnoreCase("DELETE")) {
                                     Toast.makeText(context, "Schedule deleted.", Toast.LENGTH_SHORT).show();

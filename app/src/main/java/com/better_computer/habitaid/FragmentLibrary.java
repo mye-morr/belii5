@@ -66,7 +66,7 @@ public class FragmentLibrary extends AbstractBaseFragment {
                 String sCat = listViewCategory.getItemAtPosition(i).toString();
 
                 ((MainActivity) context).sSelectedLibraryCat = sCat;
-                ((MainActivity) context).sSelectedLibrarySubcat = "";
+                ((MainActivity) context).sSelectedLibrarySubcat = "~NONE";
 
                 String sql2 = "SELECT DISTINCT subcat FROM core_tbl_nonsched WHERE cat='" + sCat + "' ORDER BY subcat";
 
@@ -174,7 +174,7 @@ public class FragmentLibrary extends AbstractBaseFragment {
             List<SearchEntry> keys = new ArrayList<SearchEntry>();
             keys.add(new SearchEntry(SearchEntry.Type.STRING, "cat", SearchEntry.Search.EQUAL, sCat));
 
-            if (sSubcat.length() > 0) {
+            if (!sSubcat.equalsIgnoreCase("~NONE")) {
                 keys.add(new SearchEntry(SearchEntry.Type.STRING, "subcat", SearchEntry.Search.EQUAL, sSubcat));
             }
 

@@ -177,7 +177,7 @@ public class NewWizardDialog extends WizardDialog {
 
         keys.add(new SearchEntry(SearchEntry.Type.STRING, "cat", SearchEntry.Search.EQUAL, "comtas"));
 
-        List<NonSched> listNsComTas = (List<NonSched>)(List<?>)nonSchedHelper.find(keys);
+        List<NonSched> listNsComTas = (List<NonSched>)(List<?>)nonSchedHelper.find(keys, "ORDER BY iprio");
         ((ListView) dialog.findViewById(R.id.new_wizard_1step_comTas_listview)).setAdapter(new NonSchedListAdapter(context, listNsComTas));
     }
 
@@ -196,7 +196,15 @@ public class NewWizardDialog extends WizardDialog {
             final EditText etContent = ((EditText)findViewById(R.id.stContent));
 
             etCategory.setText(nonSched.getCat());
+            if(nonSched.getCat().length() == 0) {
+                etCategory.setText(((MainActivity) context).sSelectedLibraryCat);
+            }
+
             etSubCategory.setText(nonSched.getSubcat());
+            if(nonSched.getSubcat().length() == 0) {
+                etSubCategory.setText(((MainActivity) context).sSelectedLibrarySubcat.replace("~NONE",""));
+            }
+
             etName.setText(nonSched.getName());
             etContent.setText(nonSched.getContent());
 
@@ -407,7 +415,12 @@ public class NewWizardDialog extends WizardDialog {
                     final NumberPicker numberPicker = (NumberPicker)dialog.findViewById(R.id.new_wizard_1step_contact_numMin);
                     final TimePicker timePicker = (TimePicker)dialog.findViewById(R.id.new_wizard_1step_contact_time);
 
-                    if(numberPicker.getValue() > 0) {
+                    if(timePicker.getCurrentHour() == 0 && timePicker.getCurrentMinute()==0
+                            && numberPicker.getValue() == 0) {
+                        // probably editing the message
+                        // so don't change the time
+                    }
+                    else if(numberPicker.getValue() > 0) {
                         Calendar instCal = Calendar.getInstance();
                         instCal.add(Calendar.MINUTE, numberPicker.getValue());
 
