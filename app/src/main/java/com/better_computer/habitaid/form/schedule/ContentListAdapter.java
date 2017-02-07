@@ -12,7 +12,6 @@ import com.better_computer.habitaid.R;
 import com.better_computer.habitaid.data.DatabaseHelper;
 import com.better_computer.habitaid.data.core.Content;
 import com.better_computer.habitaid.data.core.ContentHelper;
-import com.better_computer.habitaid.util.DynaArray;
 
 import java.util.List;
 

@@ -21,6 +21,7 @@ import com.better_computer.habitaid.form.history.HistoryPopulator;
 import com.better_computer.habitaid.navigation.DrawerAdapter;
 import com.better_computer.habitaid.navigation.DrawerItem;
 import com.better_computer.habitaid.scheduler.SchedulerService;
+import com.better_computer.habitaid.util.DynaArray;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     public String sSelectedPlayerCat = "";
     public String sSelectedPlayerSubcat = "";
     public String sGamesLastStatus = "";
+    public DynaArray dynaArray = new DynaArray();
+
     private int iLastPosition = 0;
 
     public HistoryPopulator getHistoryPopulator() {

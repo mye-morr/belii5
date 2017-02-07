@@ -22,6 +22,8 @@ import com.better_computer.habitaid.data.core.NonSched;
 import com.better_computer.habitaid.data.core.PlayerHelper;
 import com.better_computer.habitaid.form.schedule.ContentListAdapter;
 import com.better_computer.habitaid.form.schedule.NonSchedListAdapter;
+import com.better_computer.habitaid.service.PlayerService;
+import com.better_computer.habitaid.service.PlayerServiceStatic;
 import com.better_computer.habitaid.util.PlayerTask;
 
 import java.util.ArrayList;
@@ -33,8 +35,6 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
     protected PlayerHelper playerHelper;
     protected ContentHelper contentHelper;
 
-    protected volatile PlayerTask objCurPlayerTask;
-    //private DynaArray dynaArray = new DynaArray();
     private ListView listViewContent;
 
     public FragmentNewPlayer() {
@@ -155,6 +155,11 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
         btnStart.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
+                List<Content> listContent = contentHelper.findAll();
+                ((MainActivity) context).dynaArray.addContributingArray(listContent, 1, "a", 0.2, 0.2);
+
+                PlayerService.startService(context, ((MainActivity) context).dynaArray, "SUPER");
+
 //                objCurPlayerTask = new PlayerTask(context, dynaArray.currentStringArray(), "SUPER");
 //                objCurPlayerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
@@ -164,9 +169,8 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
         btnStop.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
-                if (objCurPlayerTask != null) {
-                    objCurPlayerTask.cancel(true);
-                }
+
+                PlayerService.stopService(context);
 
                 Toast.makeText(context, "thanks for playing", Toast.LENGTH_SHORT).show();
             }

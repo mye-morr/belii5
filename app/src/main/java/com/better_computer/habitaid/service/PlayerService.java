@@ -8,6 +8,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.better_computer.habitaid.util.DynaArray;
 import com.better_computer.habitaid.util.PlayerTask;
 
 /**
@@ -18,15 +19,15 @@ public class PlayerService extends Service {
 
     private static final String LOG_TAG = PlayerService.class.getSimpleName();
 
-    private static final String KEY_ITEMS = "KEY_ITEMS";
-    private static final String KEY_RATE = "KEY_RATE";
+    private static final String KEY_DYNA_ITEMS = "KEY_DYNA_ITEMS";
+    private static final String KEY_DYNA_RATE = "KEY_DYNA_RATE";
 
     protected volatile PlayerTask objCurPlayerTask;
 
-    public static void startService(Context context, String[] sxItems, String sRate) {
+    public static void startService(Context context, DynaArray dynaArray, String sRate) {
         Intent intent = new Intent(context, PlayerService.class);
-        intent.putExtra(KEY_ITEMS, sxItems);
-        intent.putExtra(KEY_RATE, sRate);
+        intent.putExtra(KEY_DYNA_ITEMS, dynaArray);
+        intent.putExtra(KEY_DYNA_RATE, sRate);
         context.startService(intent);
     }
 
@@ -42,9 +43,9 @@ public class PlayerService extends Service {
         // task is running, stop it and create a new one
         stopTaskIfRunning();
 
-        String[] sxItems = intent.getStringArrayExtra(KEY_ITEMS);
-        String sRate = intent.getStringExtra(KEY_RATE);
-        objCurPlayerTask = new PlayerTask(this, sxItems, sRate);
+        DynaArray dynaArray = intent.getParcelableExtra(KEY_DYNA_ITEMS);
+        String sRate = intent.getStringExtra(KEY_DYNA_RATE);
+        objCurPlayerTask = new PlayerTask(this, dynaArray, sRate);
         objCurPlayerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
         return START_REDELIVER_INTENT;

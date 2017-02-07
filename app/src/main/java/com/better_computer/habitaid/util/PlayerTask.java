@@ -11,13 +11,10 @@ import java.util.List;
 
 public class PlayerTask extends AsyncTask<Void, Void, Integer> {
     private Context context;
-    private String[] sxItems;
-    private Integer[] ixRandIdx;
-    private int len;
-    private int nxt;
+    private DynaArray dynaArray;
     private int iMinBreak;
 
-    public PlayerTask(Context context, String[] sxItems, String sRate) {
+    public PlayerTask(Context context, DynaArray dynaArray, String sRate) {
 
         switch(sRate) {
             case "SUPER":
@@ -38,10 +35,7 @@ public class PlayerTask extends AsyncTask<Void, Void, Integer> {
         }
 
         this.context = context;
-        this.sxItems = sxItems;
-        this.len = sxItems.length;
-        this.ixRandIdx = genRandIdx(this.len);
-        this.nxt = -1;
+        this.dynaArray = dynaArray;
     }
 
     @Override
@@ -59,11 +53,7 @@ public class PlayerTask extends AsyncTask<Void, Void, Integer> {
 
         while(!isCancelled()) {
 
-            String sKeyVal = sxItems[ixRandIdx[++nxt]];
-
-            if (nxt == (len-1)) {
-                nxt = -1;
-            }
+            String sKeyVal = dynaArray.getRandomElement();
 
             int iBuf = sKeyVal.indexOf("-=");
             int iBufColon = sKeyVal.indexOf(":");
@@ -188,4 +178,3 @@ public class PlayerTask extends AsyncTask<Void, Void, Integer> {
         return list.toArray(new Integer[list.size()]);
     }
 }
-

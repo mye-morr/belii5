@@ -1,5 +1,8 @@
 package com.better_computer.habitaid.util;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 import java.util.Random;
 
@@ -9,7 +12,30 @@ import com.better_computer.habitaid.data.core.Content;
  * Created by tedwei on 10/14/16.
  * Version 0.3
  */
-public class DynaArray {
+public class DynaArray implements Parcelable {
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        // TODO Auto-generated method stub
+    }
+
+    public static final Parcelable.Creator<DynaArray> CREATOR =
+            new Parcelable.Creator<DynaArray>() {
+                @Override
+                public DynaArray createFromParcel(Parcel source) {
+                    return new DynaArray();
+                }
+
+                @Override
+                public DynaArray[] newArray(int size) {
+                    return null;
+                }
+            };
 
     private InternalItem[] internalArray = {};
     private int lenInternalArray = 0;
