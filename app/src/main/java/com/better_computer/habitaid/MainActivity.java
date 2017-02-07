@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     public String sSelectedPlayerCat = "";
     public String sSelectedPlayerSubcat = "";
     public String sGamesLastStatus = "";
-    public DynaArray dynaArray = new DynaArray();
+    public DynaArray dynaArray = null;
 
     private int iLastPosition = 0;
 
@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
             startService(new Intent(this, SchedulerService.class));
         }
 
+        dynaArray = ((MyApplication)getApplication()).getDynaArray();
         historyPopulator = new HistoryPopulator(this);
 
         DatabaseHelper.getInstance().getHelper(ContactItemHelper.class).fetchAndUpdate();

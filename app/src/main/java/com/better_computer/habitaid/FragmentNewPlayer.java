@@ -158,7 +158,7 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
                 List<Content> listContent = contentHelper.findAll();
                 ((MainActivity) context).dynaArray.addContributingArray(listContent, 1, "a", 0.2, 0.2);
 
-                PlayerService.startService(context, ((MainActivity) context).dynaArray, "SUPER");
+                PlayerService.startService(context, "SUPER");
 
 //                objCurPlayerTask = new PlayerTask(context, dynaArray.currentStringArray(), "SUPER");
 //                objCurPlayerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
