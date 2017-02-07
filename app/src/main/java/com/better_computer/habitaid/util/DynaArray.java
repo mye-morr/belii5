@@ -3,6 +3,7 @@ package com.better_computer.habitaid.util;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -14,44 +15,61 @@ import com.better_computer.habitaid.data.core.Content;
  */
 public class DynaArray implements Parcelable {
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        // TODO Auto-generated method stub
-    }
-
-    public static final Parcelable.Creator<DynaArray> CREATOR =
-            new Parcelable.Creator<DynaArray>() {
-                @Override
-                public DynaArray createFromParcel(Parcel source) {
-                    return new DynaArray();
-                }
-
-                @Override
-                public DynaArray[] newArray(int size) {
-                    return null;
-                }
-            };
-
     private InternalItem[] internalArray = {};
     private int lenInternalArray = 0;
     private double totalWight = 0;
     private Random rand = new Random();
 
-    private static class ContributingArray {
+    private static class ContributingArray implements Parcelable {
         List<Content> array;
         int weight;
         String arrayId;
         double percentExtinguish;
         double percentRemove;
         double removeBoundary;
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeList(this.array);
+            dest.writeInt(this.weight);
+            dest.writeString(this.arrayId);
+            dest.writeDouble(this.percentExtinguish);
+            dest.writeDouble(this.percentRemove);
+            dest.writeDouble(this.removeBoundary);
+        }
+
+        public ContributingArray() {
+        }
+
+        protected ContributingArray(Parcel in) {
+            this.array = new ArrayList<Content>();
+            in.readList(this.array, Content.class.getClassLoader());
+            this.weight = in.readInt();
+            this.arrayId = in.readString();
+            this.percentExtinguish = in.readDouble();
+            this.percentRemove = in.readDouble();
+            this.removeBoundary = in.readDouble();
+        }
+
+        public static final Creator<ContributingArray> CREATOR = new Creator<ContributingArray>() {
+            @Override
+            public ContributingArray createFromParcel(Parcel source) {
+                return new ContributingArray(source);
+            }
+
+            @Override
+            public ContributingArray[] newArray(int size) {
+                return new ContributingArray[size];
+            }
+        };
     }
 
-    public static class InternalItem {
+    public static class InternalItem implements Parcelable {
         String name;
         double originalWeight;
         double calWeight;
@@ -69,6 +87,44 @@ public class DynaArray implements Parcelable {
         public String getArrayId() {
             return content.getPlayerid();
         }
+
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(this.name);
+            dest.writeDouble(this.originalWeight);
+            dest.writeDouble(this.calWeight);
+            dest.writeParcelable(this.contributingArray, flags);
+            dest.writeParcelable(this.content, flags);
+        }
+
+        public InternalItem() {
+        }
+
+        protected InternalItem(Parcel in) {
+            this.name = in.readString();
+            this.originalWeight = in.readDouble();
+            this.calWeight = in.readDouble();
+            this.contributingArray = in.readParcelable(ContributingArray.class.getClassLoader());
+            this.content = in.readParcelable(Content.class.getClassLoader());
+        }
+
+        public static final Creator<InternalItem> CREATOR = new Creator<InternalItem>() {
+            @Override
+            public InternalItem createFromParcel(Parcel source) {
+                return new InternalItem(source);
+            }
+
+            @Override
+            public InternalItem[] newArray(int size) {
+                return new InternalItem[size];
+            }
+        };
     }
 
     public String getRandomElement() {
@@ -134,7 +190,6 @@ public class DynaArray implements Parcelable {
         }
         return result;
     }
-
 
     //public void addContributingArray(Object[][] array, int weight, String arrayId, double percentExtinguish, double percentRemove) {
     public void addContributingArray(List<Content> listContent, int weight, String arrayId, double percentExtinguish, double percentRemove) {
@@ -289,4 +344,39 @@ public class DynaArray implements Parcelable {
         dynaArray.removeContributingArrayStartWith("ID");
 
     }
+
+    public DynaArray() {
+    }
+    
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedArray(this.internalArray, flags);
+        dest.writeInt(this.lenInternalArray);
+        dest.writeDouble(this.totalWight);
+        dest.writeSerializable(this.rand);
+    }
+
+    protected DynaArray(Parcel in) {
+        this.internalArray = in.createTypedArray(InternalItem.CREATOR);
+        this.lenInternalArray = in.readInt();
+        this.totalWight = in.readDouble();
+        this.rand = (Random) in.readSerializable();
+    }
+
+    public static final Creator<DynaArray> CREATOR = new Creator<DynaArray>() {
+        @Override
+        public DynaArray createFromParcel(Parcel source) {
+            return new DynaArray(source);
+        }
+
+        @Override
+        public DynaArray[] newArray(int size) {
+            return new DynaArray[size];
+        }
+    };
 }
