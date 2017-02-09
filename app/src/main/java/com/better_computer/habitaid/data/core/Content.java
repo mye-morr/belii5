@@ -8,7 +8,7 @@ import java.util.Map;
 
 import com.better_computer.habitaid.data.AbstractModel;
 
-public class Content extends AbstractModel implements Parcelable {
+public class Content extends AbstractModel {
 
     private String playerid = "";
     private String content = "";
@@ -53,37 +53,4 @@ public class Content extends AbstractModel implements Parcelable {
 
     public void setWeight(double weight) { this.weight = weight; }
 
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.playerid);
-        dest.writeString(this.content);
-        dest.writeDouble(this.weight);
-    }
-
-    public Content() {
-    }
-
-    protected Content(Parcel in) {
-        this.playerid = in.readString();
-        this.content = in.readString();
-        this.weight = in.readDouble();
-    }
-
-    public static final Creator<Content> CREATOR = new Creator<Content>() {
-        @Override
-        public Content createFromParcel(Parcel source) {
-            return new Content(source);
-        }
-
-        @Override
-        public Content[] newArray(int size) {
-            return new Content[size];
-        }
-    };
 }

@@ -13,7 +13,7 @@ import com.better_computer.habitaid.data.core.Content;
  * Created by tedwei on 10/14/16.
  * Version 0.3
  */
-public class DynaArray implements Parcelable {
+public class DynaArray {
 
     private InternalItem[] internalArray = {};
     private int lenInternalArray = 0;
@@ -69,7 +69,7 @@ public class DynaArray implements Parcelable {
         };
     }
 
-    public static class InternalItem implements Parcelable {
+    public static class InternalItem {
         String name;
         double originalWeight;
         double calWeight;
@@ -87,44 +87,6 @@ public class DynaArray implements Parcelable {
         public String getArrayId() {
             return content.getPlayerid();
         }
-
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(this.name);
-            dest.writeDouble(this.originalWeight);
-            dest.writeDouble(this.calWeight);
-            dest.writeParcelable(this.contributingArray, flags);
-            dest.writeParcelable(this.content, flags);
-        }
-
-        public InternalItem() {
-        }
-
-        protected InternalItem(Parcel in) {
-            this.name = in.readString();
-            this.originalWeight = in.readDouble();
-            this.calWeight = in.readDouble();
-            this.contributingArray = in.readParcelable(ContributingArray.class.getClassLoader());
-            this.content = in.readParcelable(Content.class.getClassLoader());
-        }
-
-        public static final Creator<InternalItem> CREATOR = new Creator<InternalItem>() {
-            @Override
-            public InternalItem createFromParcel(Parcel source) {
-                return new InternalItem(source);
-            }
-
-            @Override
-            public InternalItem[] newArray(int size) {
-                return new InternalItem[size];
-            }
-        };
     }
 
     public String getRandomElement() {
@@ -345,38 +307,4 @@ public class DynaArray implements Parcelable {
 
     }
 
-    public DynaArray() {
-    }
-    
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedArray(this.internalArray, flags);
-        dest.writeInt(this.lenInternalArray);
-        dest.writeDouble(this.totalWight);
-        dest.writeSerializable(this.rand);
-    }
-
-    protected DynaArray(Parcel in) {
-        this.internalArray = in.createTypedArray(InternalItem.CREATOR);
-        this.lenInternalArray = in.readInt();
-        this.totalWight = in.readDouble();
-        this.rand = (Random) in.readSerializable();
-    }
-
-    public static final Creator<DynaArray> CREATOR = new Creator<DynaArray>() {
-        @Override
-        public DynaArray createFromParcel(Parcel source) {
-            return new DynaArray(source);
-        }
-
-        @Override
-        public DynaArray[] newArray(int size) {
-            return new DynaArray[size];
-        }
-    };
 }
