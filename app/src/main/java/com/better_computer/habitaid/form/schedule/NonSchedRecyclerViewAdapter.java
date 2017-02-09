@@ -148,13 +148,13 @@ public class NonSchedRecyclerViewAdapter extends RecyclerView.Adapter<NonSchedRe
                                 PlayerNamePickerFragment fragment = PlayerNamePickerFragment.newInstance();
                                 fragment.setListener(new PlayerNamePickerFragment.Listener() {
                                     @Override
-                                    public void onValueSet(String subcat, String name) {
+                                    public void onValueSet(String subcat, String name, String wt, String extpct, String extthr) {
                                         PlayerHelper playerHelper = DatabaseHelper.getInstance().getHelper(PlayerHelper.class);
                                         Player player = new Player();
                                         player.copyFromNonSched(item);
-                                        player.setWt("0");
-                                        player.setExtpct("0");
-                                        player.setExtthr("0");
+                                        player.setWt(wt);
+                                        player.setExtpct(extpct);
+                                        player.setExtthr(extthr);
                                         player.setSubcat(subcat);
                                         player.setName(name);
                                         boolean result = playerHelper.createOrUpdateBySubcatAndName(player);

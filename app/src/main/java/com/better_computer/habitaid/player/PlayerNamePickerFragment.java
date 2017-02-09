@@ -16,6 +16,7 @@ import com.better_computer.habitaid.R;
 import com.better_computer.habitaid.data.DatabaseHelper;
 import com.better_computer.habitaid.data.SearchEntry;
 import com.better_computer.habitaid.data.core.NonSched;
+import com.better_computer.habitaid.data.core.Player;
 import com.better_computer.habitaid.data.core.PlayerHelper;
 
 import java.util.ArrayList;
@@ -29,12 +30,15 @@ public class PlayerNamePickerFragment extends DialogFragment {
 
     private EditText subcatView;
     private EditText nameView;
+    private EditText wtView;
+    private EditText extpctView;
+    private EditText extthrView;
     private Spinner spinner;
     private Listener listener;
-    private List<NonSched> listPlayer;
+    private List<Player> listPlayer;
 
     public interface Listener {
-        void onValueSet(String subcat, String name);
+        void onValueSet(String subcat, String name, String wt, String extpct, String extthr);
     }
 
     public static PlayerNamePickerFragment newInstance() {
@@ -53,6 +57,9 @@ public class PlayerNamePickerFragment extends DialogFragment {
 
         subcatView = (EditText) rootView.findViewById(R.id.subcat);
         nameView = (EditText) rootView.findViewById(R.id.name);
+        wtView = (EditText) rootView.findViewById(R.id.wt);
+        extpctView = (EditText) rootView.findViewById(R.id.extpct);
+        extthrView = (EditText) rootView.findViewById(R.id.extthr);
 
         rootView.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,13 +73,17 @@ public class PlayerNamePickerFragment extends DialogFragment {
             public void onClick(View view) {
                 String subcat = subcatView.getText().toString();
                 String name = nameView.getText().toString();
+                String wt = wtView.getText().toString();
+                String extpct = extpctView.getText().toString();
+                String extthr = extthrView.getText().toString();
+
                 if (subcat.isEmpty() || name.isEmpty()) {
                     Toast.makeText(getActivity(), "Subcat or Name can not be empty.", Toast.LENGTH_SHORT);
                     return;
                 }
 
                 if (listener != null) {
-                    listener.onValueSet(subcat, name);
+                    listener.onValueSet(subcat, name, wt, extpct, extthr);
                 }
 
                 dismiss();
@@ -89,8 +100,9 @@ public class PlayerNamePickerFragment extends DialogFragment {
                 }
 
                 if (listener != null) {
-                    NonSched selectedItem = listPlayer.get(position - 1);
-                    listener.onValueSet(selectedItem.getSubcat(), selectedItem.getName());
+                    Player selectedItem = listPlayer.get(position - 1);
+                    listener.onValueSet(selectedItem.getSubcat(), selectedItem.getName(),
+                        selectedItem.getWt(), selectedItem.getExtpct(), selectedItem.getExtthr());
                 }
 
                 dismiss();
@@ -115,7 +127,7 @@ public class PlayerNamePickerFragment extends DialogFragment {
             listPlayer = playerHelper.find(keys, "Group BY subcat, name");
             List<String> displayList = new ArrayList<>();
             displayList.add(""); // add an empty item
-            for (NonSched item : listPlayer) {
+            for (Player item : listPlayer) {
                 String display = "(" + item.getSubcat() + ") - (" + item.getName() + ")";
                 displayList.add(display);
             }
