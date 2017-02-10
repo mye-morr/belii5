@@ -35,7 +35,7 @@ public class PlayerNamePickerFragment extends DialogFragment {
     private EditText extthrView;
     private Spinner spinner;
     private Listener listener;
-    private List<Player> listPlayer;
+    private List<NonSched> listPlayer;
 
     public interface Listener {
         void onValueSet(String subcat, String name, String wt, String extpct, String extthr);
@@ -100,7 +100,7 @@ public class PlayerNamePickerFragment extends DialogFragment {
                 }
 
                 if (listener != null) {
-                    Player selectedItem = listPlayer.get(position - 1);
+                    Player selectedItem = (Player)(listPlayer.get(position - 1));
                     listener.onValueSet(selectedItem.getSubcat(), selectedItem.getName(),
                         selectedItem.getWt(), selectedItem.getExtpct(), selectedItem.getExtthr());
                 }
@@ -127,7 +127,7 @@ public class PlayerNamePickerFragment extends DialogFragment {
             listPlayer = playerHelper.find(keys, "Group BY subcat, name");
             List<String> displayList = new ArrayList<>();
             displayList.add(""); // add an empty item
-            for (Player item : listPlayer) {
+            for (NonSched item : listPlayer) {
                 String display = "(" + item.getSubcat() + ") - (" + item.getName() + ")";
                 displayList.add(display);
             }
