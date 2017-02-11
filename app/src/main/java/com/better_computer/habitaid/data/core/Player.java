@@ -6,9 +6,9 @@ import java.util.Map;
 
 public class Player extends NonSched {
 
-    private String wt = "";
-    private String extpct = "";
-    private String extthr = "";
+    private int wt = 0;
+    private double extpct = 0.0;
+    private double extthr = 0.0;
 
     public ContentValues getContentValues() {
         ContentValues contentValues = super.getContentValues();
@@ -24,9 +24,9 @@ public class Player extends NonSched {
     public void populateWith(Map<String, Object> data) {
         super.populateWith(data);
 
-        wt = fetchData(data, "wt");
-        extpct = fetchData(data, "extpct");
-        extthr = fetchData(data, "extthr");
+        wt = fetchDataInteger(data, "wt");
+        extpct = fetchDataDouble(data, "extpct");
+        extthr = fetchDataDouble(data, "extthr");
     }
 
     public void copyFromNonSched(NonSched input) {
@@ -40,16 +40,16 @@ public class Player extends NonSched {
         setNotes(input.getNotes());
     }
 
-    public String getWt() { return wt; }
+    public int getWt() { return wt; }
 
-    public void setWt(String wt) { this.wt = wt; }
+    public void setWt(int wt) { this.wt = wt; }
 
-    public String getExtpct() { return extpct; }
+    public double getExtpct() { return extpct; }
 
-    public void setExtpct(String extpct) { this.extpct = extpct; }
+    public void setExtpct(double extpct) { this.extpct = extpct; }
 
-    public String getExtthr() { return extthr; }
+    public double getExtthr() { return extthr; }
 
-    public void setExtthr(String extthr) { this.extthr = extthr; }
+    public void setExtthr(double extthr) { this.extthr = extthr; }
 
 }

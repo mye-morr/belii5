@@ -14,8 +14,10 @@ public class ContentHelper extends AbstractHelper<Content> {
         super(context);
         this.tableName = "core_tbl_content";
         this.columns.add("playerid TEXT");
+        this.columns.add("playercat TEXT");
+        this.columns.add("playersubcat TEXT");
         this.columns.add("content TEXT");
-        this.columns.add("weight REAL");
+        this.columns.add("wt INTEGER");
     }
 
     @Override

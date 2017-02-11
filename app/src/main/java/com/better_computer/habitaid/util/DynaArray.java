@@ -20,53 +20,13 @@ public class DynaArray {
     private double totalWight = 0;
     private Random rand = new Random();
 
-    private static class ContributingArray implements Parcelable {
+    private static class ContributingArray {
         List<Content> array;
         int weight;
         String arrayId;
         double percentExtinguish;
         double percentRemove;
         double removeBoundary;
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeList(this.array);
-            dest.writeInt(this.weight);
-            dest.writeString(this.arrayId);
-            dest.writeDouble(this.percentExtinguish);
-            dest.writeDouble(this.percentRemove);
-            dest.writeDouble(this.removeBoundary);
-        }
-
-        public ContributingArray() {
-        }
-
-        protected ContributingArray(Parcel in) {
-            this.array = new ArrayList<Content>();
-            in.readList(this.array, Content.class.getClassLoader());
-            this.weight = in.readInt();
-            this.arrayId = in.readString();
-            this.percentExtinguish = in.readDouble();
-            this.percentRemove = in.readDouble();
-            this.removeBoundary = in.readDouble();
-        }
-
-        public static final Creator<ContributingArray> CREATOR = new Creator<ContributingArray>() {
-            @Override
-            public ContributingArray createFromParcel(Parcel source) {
-                return new ContributingArray(source);
-            }
-
-            @Override
-            public ContributingArray[] newArray(int size) {
-                return new ContributingArray[size];
-            }
-        };
     }
 
     public static class InternalItem {
@@ -112,7 +72,7 @@ public class DynaArray {
                     // swap item to the last to simulate remove
                     swapWithLastItem(i);
                 } else {
-                    // adjust total weight
+                    //!!! this looks wrong!!
                     totalWight -= (item.calWeight - newWeight);
                     // assign new cal weight
                     item.calWeight = newWeight;
@@ -154,7 +114,7 @@ public class DynaArray {
     }
 
     //public void addContributingArray(Object[][] array, int weight, String arrayId, double percentExtinguish, double percentRemove) {
-    public void addContributingArray(List<Content> listContent, int weight, String arrayId, double percentExtinguish, double percentRemove) {
+    public void addContributingArray(List<Content> listContent, String arrayId, int weight, double percentExtinguish, double percentRemove) {
         ContributingArray contributingArray = new ContributingArray();
         contributingArray.array = listContent;
         contributingArray.weight = weight;

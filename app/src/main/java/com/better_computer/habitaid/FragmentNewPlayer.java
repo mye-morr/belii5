@@ -19,9 +19,12 @@ import com.better_computer.habitaid.data.SearchEntry;
 import com.better_computer.habitaid.data.core.Content;
 import com.better_computer.habitaid.data.core.ContentHelper;
 import com.better_computer.habitaid.data.core.NonSched;
+import com.better_computer.habitaid.data.core.Player;
 import com.better_computer.habitaid.data.core.PlayerHelper;
 import com.better_computer.habitaid.form.schedule.ContentListAdapter;
 import com.better_computer.habitaid.form.schedule.NonSchedListAdapter;
+import com.better_computer.habitaid.player.ContentExtPickerFragment;
+import com.better_computer.habitaid.player.PlayerNamePickerFragment;
 import com.better_computer.habitaid.service.PlayerService;
 import com.better_computer.habitaid.service.PlayerServiceStatic;
 import com.better_computer.habitaid.util.PlayerTask;
@@ -73,7 +76,7 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
         listViewItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                final NonSched nsPlayer = (NonSched)listViewItems.getItemAtPosition(i);
+                final Player nsPlayer = (Player)listViewItems.getItemAtPosition(i);
 
                 AlertDialog.Builder alertOptions = new AlertDialog.Builder(context);
                 List<String> optsList = new ArrayList<String>();
@@ -85,37 +88,59 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
                     optsList.add("Add");
                 }
 
+                optsList.add("Delete");
+
                 final String[] options = optsList.toArray(new String[]{});
                 alertOptions.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, android.R.id.text1, options), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        if (options[i].equalsIgnoreCase("Add")) {
-                            if (!"active".equals(nsPlayer.get_state())) {
-                                nsPlayer.set_state("active");
-                                playerHelper.update(nsPlayer);
-                                String playerContent = nsPlayer.getContent();
-                                String[] contentArray = playerContent.split("\n");
-                                for (String strContent : contentArray) {
-                                    Content content = new Content();
-                                    String sNewId = java.util.UUID.randomUUID().toString();
-                                    content.set_id(sNewId);
-                                    content.set_state("active");
-                                    content.setPlayerid(nsPlayer.get_id());
-                                    content.setContent(strContent);
-                                    content.setWeight(0.1);
-                                    contentHelper.create(content);
+                        if (options[i].equalsIgnoreCase("DELETE")) {
+                            contentHelper.deleteByPlayerId(nsPlayer.get_id());
+                            playerHelper.delete(nsPlayer.get_id());
+                            refreshItemList();
+                            refreshContentList();
+                        } else if (options[i].equalsIgnoreCase("ADD")) {
+
+                            ContentExtPickerFragment fragment = ContentExtPickerFragment.newInstance();
+                            fragment.setListener(new ContentExtPickerFragment.Listener() {
+                                @Override
+                                public void onValueSet(int wt, double extpct, double extthr) {
+                                    nsPlayer.setWt(wt);
+                                    nsPlayer.setExtpct(extpct);
+                                    nsPlayer.setExtthr(extthr);
+
+                                    String playerContent = nsPlayer.getContent();
+                                    String[] contentArray = playerContent.split("\n");
+                                    for (String strContent : contentArray) {
+                                        Content content = new Content();
+                                        String sNewId = java.util.UUID.randomUUID().toString();
+                                        content.set_id(sNewId);
+                                        content.set_state("active");
+                                        content.setPlayerid(nsPlayer.get_id());
+                                        content.setPlayerCat(nsPlayer.getSubcat());
+                                        content.setPlayerSubcat(nsPlayer.getName());
+
+                                        int iBufPipe = 0;
+                                        iBufPipe = strContent.indexOf("|");
+                                        content.setWeight(Integer.parseInt(strContent.substring(0,iBufPipe).trim()));
+                                        content.setContent(strContent.substring(iBufPipe+1).trim());
+
+                                        contentHelper.create(content);
+                                    }
+                                    nsPlayer.set_state("active");
+                                    playerHelper.update(nsPlayer);
+                                    refreshItemList();
+                                    refreshContentList();
                                 }
-                                refreshItemList();
-                                refreshContentList();
-                            }
-                        } else if (options[i].equalsIgnoreCase("Remove")) {
-                            if ("active".equals(nsPlayer.get_state())) {
-                                nsPlayer.set_state("inactive");
-                                playerHelper.update(nsPlayer);
-                                contentHelper.deleteByPlayerId(nsPlayer.get_id());
-                                refreshItemList();
-                                refreshContentList();
-                            }
+                            });
+                            fragment.show(((MainActivity)context).getSupportFragmentManager(), null);
+
+                        } else if (options[i].equalsIgnoreCase("REMOVE")) {
+                            nsPlayer.set_state("inactive");
+                            playerHelper.update(nsPlayer);
+                            contentHelper.deleteByPlayerId(nsPlayer.get_id());
+                            refreshItemList();
+                            refreshContentList();
                         }
                     }
                 });
@@ -128,35 +153,15 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
                     }
                 });
                 alertOptions.show();
-
-//                String arrayid = nsPlayer.get_id();
-//                if (dynaArray.containsContributingArray(arrayid)) {
-//                    dynaArray.removeContributingArray(arrayid);
-//                } else {
-//                    List<SearchEntry> keys = new ArrayList<SearchEntry>();
-//                    keys.add(new SearchEntry(SearchEntry.Type.STRING, "playerid", SearchEntry.Search.EQUAL, nsPlayer.get_id()));
-//                    List<Content> listContent = contentHelper.find(keys);
-//                    dynaArray.addContributingArray(listContent, 1, arrayid, 0.6, 0.05);
-//                }
-//                listViewContent.setAdapter(new ContentListAdapter(context, dynaArray.currentInternalItemArray()));
             }
         });
-
-//        listViewContent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                final DynaArray.InternalItem item = (DynaArray.InternalItem) listViewContent.getItemAtPosition(i);
-//                dynaArray.removeContributingArray(item.getArrayId());
-//                listViewContent.setAdapter(new ContentListAdapter(context, dynaArray.currentInternalItemArray()));
-//            }
-//        });
 
         final Button btnStart = ((Button) rootView.findViewById(R.id.btnStart));
         btnStart.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
                 List<Content> listContent = contentHelper.findAll();
-                ((MainActivity) context).dynaArray.addContributingArray(listContent, 1, "a", 0.2, 0.2);
+                ((MainActivity) context).dynaArray.addContributingArray(listContent, "a", 1, 0.05, 0.05);
 
                 PlayerService.startService(context, "SUPER");
 
@@ -209,7 +214,6 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
         String sSubcat = ((MainActivity) context).sSelectedPlayerSubcat;
         if(!sSubcat.equalsIgnoreCase("")) {
             final ListView listViewItems = ((ListView) rootView.findViewById(R.id.schedule_subcategory_list));
-
 
             List<SearchEntry> keys = new ArrayList<SearchEntry>();
             keys.add(new SearchEntry(SearchEntry.Type.STRING, "subcat", SearchEntry.Search.EQUAL, sSubcat));

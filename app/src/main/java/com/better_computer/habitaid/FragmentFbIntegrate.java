@@ -317,7 +317,7 @@ public class FragmentFbIntegrate extends AbstractBaseFragment {
                     stmt.setString(4, nonSched.getCat());
                     stmt.setString(5, nonSched.getSubcat());
                     stmt.setString(6, nonSched.getSubsub());
-                    stmt.setString(7, nonSched.getIprio());
+                    stmt.setInt(7, nonSched.getIprio());
                     stmt.setString(8, nonSched.getName());
                     stmt.setString(9, nonSched.getAbbrev());
                     stmt.setString(10, nonSched.getContent());
@@ -370,7 +370,7 @@ public class FragmentFbIntegrate extends AbstractBaseFragment {
                     nonSched.setCat(rs.getString("cat"));
                     nonSched.setSubcat(rs.getString("subcat"));
                     nonSched.setSubsub(rs.getString("subsub"));
-                    nonSched.setIprio(rs.getString("iprio"));
+                    nonSched.setIprio(rs.getInt("iprio"));
                     nonSched.setName(rs.getString("name"));
                     nonSched.setAbbrev(rs.getString("abbrev"));
                     nonSched.setContent(rs.getString("content"));

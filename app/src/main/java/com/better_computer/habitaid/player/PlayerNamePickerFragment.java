@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -30,15 +31,13 @@ public class PlayerNamePickerFragment extends DialogFragment {
 
     private EditText subcatView;
     private EditText nameView;
-    private EditText wtView;
-    private EditText extpctView;
-    private EditText extthrView;
+    private SeekBar wtView;
     private Spinner spinner;
     private Listener listener;
     private List<NonSched> listPlayer;
 
     public interface Listener {
-        void onValueSet(String subcat, String name, String wt, String extpct, String extthr);
+        void onValueSet(String subcat, String name, int wt);
     }
 
     public static PlayerNamePickerFragment newInstance() {
@@ -57,9 +56,7 @@ public class PlayerNamePickerFragment extends DialogFragment {
 
         subcatView = (EditText) rootView.findViewById(R.id.subcat);
         nameView = (EditText) rootView.findViewById(R.id.name);
-        wtView = (EditText) rootView.findViewById(R.id.wt);
-        extpctView = (EditText) rootView.findViewById(R.id.extpct);
-        extthrView = (EditText) rootView.findViewById(R.id.extthr);
+        wtView = (SeekBar) rootView.findViewById(R.id.wt);
 
         rootView.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,9 +70,7 @@ public class PlayerNamePickerFragment extends DialogFragment {
             public void onClick(View view) {
                 String subcat = subcatView.getText().toString();
                 String name = nameView.getText().toString();
-                String wt = wtView.getText().toString();
-                String extpct = extpctView.getText().toString();
-                String extthr = extthrView.getText().toString();
+                int wt = wtView.getProgress() + 1;
 
                 if (subcat.isEmpty() || name.isEmpty()) {
                     Toast.makeText(getActivity(), "Subcat or Name can not be empty.", Toast.LENGTH_SHORT);
@@ -83,7 +78,7 @@ public class PlayerNamePickerFragment extends DialogFragment {
                 }
 
                 if (listener != null) {
-                    listener.onValueSet(subcat, name, wt, extpct, extthr);
+                    listener.onValueSet(subcat, name, wt);
                 }
 
                 dismiss();
@@ -101,11 +96,9 @@ public class PlayerNamePickerFragment extends DialogFragment {
 
                 if (listener != null) {
                     Player selectedItem = (Player)(listPlayer.get(position - 1));
-                    listener.onValueSet(selectedItem.getSubcat(), selectedItem.getName(),
-                        selectedItem.getWt(), selectedItem.getExtpct(), selectedItem.getExtthr());
+                    subcatView.setText(selectedItem.getSubcat());
+                    nameView.setText(selectedItem.getName());
                 }
-
-                dismiss();
             }
 
             @Override

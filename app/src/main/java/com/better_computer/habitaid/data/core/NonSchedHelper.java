@@ -16,7 +16,7 @@ public class NonSchedHelper extends AbstractHelper<NonSched>{
         this.columns.add("cat TEXT");
         this.columns.add("subcat TEXT");
         this.columns.add("subsub TEXT");
-        this.columns.add("iprio TEXT");
+        this.columns.add("iprio INTEGER");
         this.columns.add("name TEXT");
         this.columns.add("abbrev TEXT");
         this.columns.add("content TEXT");
@@ -30,7 +30,7 @@ public class NonSchedHelper extends AbstractHelper<NonSched>{
 
     public boolean createAndShift(NonSched model) {
         reorder(model.getCat(), 1);
-        model.setIprio("0");
+        model.setIprio(0);
         return super.create(model);
     }
 
@@ -41,7 +41,7 @@ public class NonSchedHelper extends AbstractHelper<NonSched>{
         for (int i = 0 ; i < list.size() ; i++) {
             NonSched nonSched = list.get(i);
             int newIprio = i + start;
-            nonSched.setIprio("" + newIprio);
+            nonSched.setIprio(newIprio);
             update(nonSched);
         }
     }

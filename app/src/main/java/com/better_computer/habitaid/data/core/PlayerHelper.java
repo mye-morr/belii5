@@ -14,9 +14,9 @@ public class PlayerHelper extends NonSchedHelper {
     public PlayerHelper(Context context) {
         super(context);
         this.tableName = "core_tbl_player";
-        this.columns.add("wt TEXT");
-        this.columns.add("extpct TEXT");
-        this.columns.add("extthr TEXT");
+        this.columns.add("wt INT");
+        this.columns.add("extpct REAL");
+        this.columns.add("extthr REAL");
     }
 
     @Override
@@ -35,12 +35,14 @@ public class PlayerHelper extends NonSchedHelper {
         if (dbPlayer == null) {
             String sNewId = java.util.UUID.randomUUID().toString();
             player.set_id(sNewId);
+            player.setContent(player.getWt() + "|" + player.getContent());
+            player.setWt(0);
             // create
             result = create(player);
             Log.i("DB", "Insert into " + "core_tbl_player" + ":" + player.get_id());
         } else {
             // update
-            String mergedContent = dbPlayer.getContent() + "\n" + player.getContent();
+            String mergedContent = dbPlayer.getContent() + "\n" + player.getWt() + "|" + player.getContent();
             dbPlayer.setContent(mergedContent);
             result = update(dbPlayer);
             Log.i("DB", "Upadte " + "core_tbl_player" + ":" + player.get_id());

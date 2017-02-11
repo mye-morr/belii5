@@ -148,15 +148,15 @@ public class NonSchedRecyclerViewAdapter extends RecyclerView.Adapter<NonSchedRe
                                 PlayerNamePickerFragment fragment = PlayerNamePickerFragment.newInstance();
                                 fragment.setListener(new PlayerNamePickerFragment.Listener() {
                                     @Override
-                                    public void onValueSet(String subcat, String name, String wt, String extpct, String extthr) {
+                                    public void onValueSet(String subcat, String name, int wt) {
                                         PlayerHelper playerHelper = DatabaseHelper.getInstance().getHelper(PlayerHelper.class);
                                         Player player = new Player();
                                         player.copyFromNonSched(item);
-                                        player.setWt(wt);
-                                        player.setExtpct(extpct);
-                                        player.setExtthr(extthr);
                                         player.setSubcat(subcat);
                                         player.setName(name);
+                                        player.setWt(wt);
+                                        player.setExtpct(0);
+                                        player.setExtthr(0);
                                         boolean result = playerHelper.createOrUpdateBySubcatAndName(player);
                                         if (result) {
                                             Toast.makeText(context, "Added to Player.", Toast.LENGTH_SHORT).show();
@@ -236,8 +236,8 @@ public class NonSchedRecyclerViewAdapter extends RecyclerView.Adapter<NonSchedRe
             NonSched[] array = nonSchedList.toArray(new NonSched[0]);
             for (int i = 0 ; i < array.length ; i++) {
                 NonSched nonSched = array[i];
-                String iprio = "" + i;
-                if (!iprio.equals(nonSched.getIprio())) {
+                int iprio = i;
+                if (iprio != nonSched.getIprio()) {
                     nonSched.setIprio(iprio);
                     nonSchedHelper.update(nonSched);
                 }

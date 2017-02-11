@@ -11,15 +11,19 @@ import com.better_computer.habitaid.data.AbstractModel;
 public class Content extends AbstractModel {
 
     private String playerid = "";
+    private String playercat = "";
+    private String playersubcat = "";
     private String content = "";
-    private double weight = 0.0;
+    private int wt = 0;
 
     public ContentValues getContentValues() {
         ContentValues contentValues = super.getContentValues();
 
         contentValues.put("playerid", playerid);
+        contentValues.put("playercat", playercat);
+        contentValues.put("playersubcat", playersubcat);
         contentValues.put("content", content);
-        contentValues.put("weight", weight);
+        contentValues.put("wt", wt);
 
         return contentValues;
     }
@@ -29,8 +33,10 @@ public class Content extends AbstractModel {
         super.populateWith(data);
 
         playerid = fetchData(data, "playerid");
+        playercat = fetchData(data, "playercat");
+        playersubcat = fetchData(data, "playersubcat");
         content = fetchData(data, "content");
-        weight = fetchDataDouble(data, "weight");
+        wt = fetchDataInteger(data, "wt");
     }
 
     public String getPlayerid() {
@@ -41,6 +47,22 @@ public class Content extends AbstractModel {
         this.playerid = playerid;
     }
 
+    public String getPlayerCat() {
+        return playercat;
+    }
+
+    public void setPlayerCat(String playercat) {
+        this.playercat = playercat;
+    }
+
+    public String getPlayerSubcat() {
+        return playersubcat;
+    }
+
+    public void setPlayerSubcat(String subcat) {
+        this.playersubcat = subcat;
+    }
+
     public String getContent() {
         return content;
     }
@@ -49,8 +71,8 @@ public class Content extends AbstractModel {
         this.content = content;
     }
 
-    public double getWeight() { return weight; }
+    public int getWeight() { return wt; }
 
-    public void setWeight(double weight) { this.weight = weight; }
+    public void setWeight(int weight) { this.wt = weight; }
 
 }

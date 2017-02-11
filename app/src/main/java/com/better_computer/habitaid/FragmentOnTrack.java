@@ -478,8 +478,8 @@ public class FragmentOnTrack extends AbstractBaseFragment {
                 NonSched[] array = nonSchedList.toArray(new NonSched[0]);
                 for (int i = 0 ; i < array.length ; i++) {
                     NonSched nonSched = array[i];
-                    String iprio = "" + i;
-                    if (!iprio.equals(nonSched.getIprio())) {
+                    int iprio = i;
+                    if (iprio != nonSched.getIprio()) {
                         nonSched.setIprio(iprio);
                         nonSchedHelper.update(nonSched);
                     }
