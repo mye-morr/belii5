@@ -53,14 +53,7 @@ public class DynaArray {
 
     public String getRandomElement() {
         if (lenInternalArray == 0) {
-
-            // restart process by restoring weights
-            for(InternalItem ii : internalArray) {
-                ii.calWeight = ii.originalWeight;
-            }
-
-            // restore length of array
-            lenInternalArray = internalArray.length;
+            return "";
         }
 
         double dRand = rand.nextDouble();
@@ -71,26 +64,27 @@ public class DynaArray {
         for (int i = 0; i < lenInternalArray; i++) {
             InternalItem item = internalArray[i];
             fSum += (double) item.calWeight;
-            if(dRand < fSum) {
+            if(dRand < fSum
+                    && item.calWeight > item.contributingArray.removeBoundary) {
+
                 String sResult = (String) item.name;
 
                 // apply percentExtinquish
                 double newWeight = item.calWeight * (1 - item.contributingArray.percentExtinguish);
 
-                if (newWeight < item.contributingArray.removeBoundary) {
-                    // swap item to the last to simulate remove
-                    swapWithLastItem(i);
-                } else {
-                    totalWight -= (item.calWeight - newWeight);
-                    // assign new cal weight
-                    item.calWeight = newWeight;
-                }
+                totalWight -= (item.calWeight - newWeight);
+                // assign new cal weight
+                item.calWeight = newWeight;
 
                 return sResult;
             }
         }
 
-        return null;
+        for (int i = 0; i < lenInternalArray; i++) {
+            InternalItem item = internalArray[i];
+            item.calWeight = item.originalWeight;
+        }
+        return getRandomElement();
     }
 
     public String[] currentStringArray() {
