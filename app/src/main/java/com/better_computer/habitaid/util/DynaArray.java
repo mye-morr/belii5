@@ -19,7 +19,7 @@ public class DynaArray {
     public void init() {
         this.internalArray = new InternalItem[] {};
         lenInternalArray = 0;
-        double totalWight = 0;
+        totalWight = 0;
     }
 
     private static class ContributingArray {
@@ -71,7 +71,6 @@ public class DynaArray {
 
                 // apply percentExtinquish
                 double newWeight = item.calWeight * (1 - item.contributingArray.percentExtinguish);
-
                 totalWight -= (item.calWeight - newWeight);
                 // assign new cal weight
                 item.calWeight = newWeight;
@@ -80,7 +79,10 @@ public class DynaArray {
             }
         }
 
+        // may have changed!
+        // since some items have been removed
         totalWight = 0;
+
         for (int i = 0; i < lenInternalArray; i++) {
             InternalItem item = internalArray[i];
             item.calWeight = item.originalWeight * item.contributingArray.weight;
@@ -115,6 +117,8 @@ public class DynaArray {
         contributingArray.percentExtinguish = percentExtinguish;
         contributingArray.percentRemove = percentRemove;
 
+        int iTotWeightArray = 0;
+
         InternalItem[] tempInternalArray = new InternalItem[listContent.size()];
         for (int i=0 ; i<tempInternalArray.length ; i++) {
             Content content = listContent.get(i);
@@ -126,9 +130,11 @@ public class DynaArray {
             item.name = (String) content.getContent();
             item.originalWeight = (double) content.getWeight();
             item.calWeight = item.originalWeight * item.contributingArray.weight;
-            totalWight += item.calWeight;
+            iTotWeightArray += item.calWeight;
         }
-        contributingArray.removeBoundary = totalWight * contributingArray.percentRemove;
+
+        contributingArray.removeBoundary = iTotWeightArray * contributingArray.percentRemove;
+        totalWight += iTotWeightArray;
         internalArray = concat(internalArray, lenInternalArray, tempInternalArray, tempInternalArray.length);
         lenInternalArray = internalArray.length;
     }
@@ -186,6 +192,10 @@ public class DynaArray {
         while (i < lenInternalArray) {
             InternalItem item = internalArray[i];
             if (item.name.equals(itemName)) {
+
+                // if item removed, remove its contribution to extinguish threshold
+                item.contributingArray.removeBoundary -= item.originalWeight * item.contributingArray.weight * item.contributingArray.percentRemove;
+
                 swapWithLastItem(i);
             } else {
                 i++;
