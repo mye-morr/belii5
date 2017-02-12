@@ -139,7 +139,7 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
 
                                     ((MainActivity) context).dynaArray.addContributingArray(
                                             contentHelper.findBy("playerid",nsPlayer.get_id()),
-                                            nsPlayer.getName(), wt, extpct, extthr);
+                                            nsPlayer.get_id(), wt, extpct, extthr);
 
                                     refreshItemList(dialog);
                                     refreshContentList(dialog);
