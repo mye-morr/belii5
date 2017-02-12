@@ -8,15 +8,27 @@ import android.os.PowerManager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class PlayerTask extends AsyncTask<Void, Void, Integer> {
     private Context context;
     private DynaArray dynaArray;
     private int iMinBreak;
+    private int iVaria;
 
     public PlayerTask(Context context, DynaArray dynaArray, String sRate) {
 
-        this.iMinBreak = Integer.parseInt(sRate);
+        int iBufSemi = 0;
+        iBufSemi = sRate.indexOf(";");
+
+        if(iBufSemi > 0) {
+            this.iMinBreak = Integer.parseInt(sRate.substring(0,iBufSemi).trim());
+            this.iVaria = Integer.parseInt(sRate.substring(iBufSemi+1).trim());
+        }
+        else {
+            this.iMinBreak = Integer.parseInt(sRate);
+            this.iVaria = 0;
+        }
 
         this.context = context;
         this.dynaArray = dynaArray;
@@ -90,7 +102,6 @@ public class PlayerTask extends AsyncTask<Void, Void, Integer> {
 
                     fc_output[0] = sKey;
                     fc_output[1] = sVal;
-
                 }
 
                 String sOutput = "";
@@ -133,7 +144,20 @@ public class PlayerTask extends AsyncTask<Void, Void, Integer> {
                 context.sendBroadcast(i3);
 
                 try {
-                    Thread.sleep(iMinBreak * 60 * 1000);
+                    long lMinSleep = iMinBreak;
+
+                    if(iVaria > 0) {
+                        Random rand = new Random();
+
+                        int iPlusMinus = 1;
+                        if (rand.nextDouble() < 0.5) {
+                            iPlusMinus = -1;
+                        }
+
+                        lMinSleep += Math.round(iPlusMinus * rand.nextDouble() * iVaria);
+                    }
+
+                    Thread.sleep(lMinSleep * 60 * 1000);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
