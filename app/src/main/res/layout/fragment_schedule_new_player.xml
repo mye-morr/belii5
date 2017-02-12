@@ -59,8 +59,8 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="Stop"
-            android:id="@+id/btnStop"
+            android:text="Clear"
+            android:id="@+id/btnClear"
             android:layout_gravity="center_horizontal"
             android:layout_marginLeft="10dp"/>
 

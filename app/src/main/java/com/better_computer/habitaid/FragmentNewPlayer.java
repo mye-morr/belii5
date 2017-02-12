@@ -1,10 +1,12 @@
 package com.better_computer.habitaid;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,8 +46,6 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
     protected PlayerHelper playerHelper;
     protected ContentHelper contentHelper;
 
-    private ListView listViewContent;
-
     public FragmentNewPlayer() {
     }
 
@@ -61,13 +61,14 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
     public void onViewCreated(View rootView, Bundle savedInstanceState) {
         super.onViewCreated(rootView, savedInstanceState);
 
+        final View dialog = rootView;
+
         this.databaseHelper = DatabaseHelper.getInstance();
         this.playerHelper = DatabaseHelper.getInstance().getHelper(PlayerHelper.class);
         this.contentHelper = DatabaseHelper.getInstance().getHelper(ContentHelper.class);
 
-        final ListView listViewSubcat = ((ListView) rootView.findViewById(R.id.schedule_category_list));
-        final ListView listViewItems = ((ListView) rootView.findViewById(R.id.schedule_subcategory_list));
-        listViewContent = ((ListView) rootView.findViewById(R.id.schedule_new_player_list));
+        final ListView listViewSubcat = ((ListView) dialog.findViewById(R.id.schedule_category_list));
+        final ListView listViewItems = ((ListView) dialog.findViewById(R.id.schedule_subcategory_list));
 
         listViewSubcat.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -75,7 +76,7 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
                 String sSubcat = listViewSubcat.getItemAtPosition(i).toString();
                 ((MainActivity) context).sSelectedPlayerSubcat = sSubcat;
 
-                refreshItemList();
+                refreshItemList(dialog);
             }
         });
 
@@ -103,8 +104,8 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
                         if (options[i].equalsIgnoreCase("DELETE")) {
                             contentHelper.deleteByPlayerId(nsPlayer.get_id());
                             playerHelper.delete(nsPlayer.get_id());
-                            refreshItemList();
-                            refreshContentList();
+                            refreshItemList(dialog);
+                            refreshContentList(dialog);
                         } else if (options[i].equalsIgnoreCase("ADD")) {
 
                             ContentExtPickerFragment fragment = ContentExtPickerFragment.newInstance();
@@ -140,8 +141,8 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
                                             contentHelper.findBy("playerid",nsPlayer.get_id()),
                                             nsPlayer.getName(), wt, extpct, extthr);
 
-                                    refreshItemList();
-                                    refreshContentList();
+                                    refreshItemList(dialog);
+                                    refreshContentList(dialog);
                                 }
                             });
                             fragment.show(((MainActivity)context).getSupportFragmentManager(), null);
@@ -154,8 +155,8 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
                             ((MainActivity) context).dynaArray.removeContributingArray(
                                     nsPlayer.get_id());
 
-                            refreshItemList();
-                            refreshContentList();
+                            refreshItemList(dialog);
+                            refreshContentList(dialog);
                         }
                     }
                 });
@@ -201,23 +202,39 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
             }
         });
 
-        final Button btnStop = ((Button) rootView.findViewById(R.id.btnStop));
-        btnStop.setOnClickListener(new View.OnClickListener() {
+        final Button btnClear = ((Button) rootView.findViewById(R.id.btnClear));
+        btnClear.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
                 PlayerService.stopService(context);
                 ((MainActivity) context).dynaArray.init();
 
+                // clear out content table
+                SQLiteDatabase database = DatabaseHelper.getInstance().getReadableDatabase();
+                String whereClause = "";
+                List<String> whereArgs = new ArrayList<String>();
+                Boolean output;
+                output = database.delete("core_tbl_content",
+                        whereClause, whereArgs.toArray(new String[whereArgs.size()])) > 0;
+
+                // reset player to inactive
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("_state", "inactive");
+
+                output = database.update("core_tbl_player", contentValues,
+                        whereClause, whereArgs.toArray(new String[whereArgs.size()])) > 0;
+
                 Toast.makeText(context, "thanks for playing", Toast.LENGTH_SHORT).show();
             }
         });
 
-        refresh();
+        ((MainActivity)context).resetup();
    }
 
     @Override
     public void refresh() {
-        final ListView listViewSubcat = ((ListView) rootView.findViewById(R.id.schedule_category_list));
+        final View dialog = rootView;
+        final ListView listViewSubcat = ((ListView) dialog.findViewById(R.id.schedule_category_list));
 
         SQLiteDatabase database = this.databaseHelper.getReadableDatabase();
 
@@ -237,14 +254,14 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
 
         ArrayAdapter<String> adapterSubcat = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, listSubcat);
         listViewSubcat.setAdapter(adapterSubcat);
-        refreshItemList();
-        refreshContentList();
+        refreshItemList(dialog);
+        refreshContentList(dialog);
     }
 
-    private void refreshItemList() {
+    private void refreshItemList(View dialog) {
         String sSubcat = ((MainActivity) context).sSelectedPlayerSubcat;
         if(!sSubcat.equalsIgnoreCase("")) {
-            final ListView listViewItems = ((ListView) rootView.findViewById(R.id.schedule_subcategory_list));
+            final ListView listViewItems = ((ListView) dialog.findViewById(R.id.schedule_subcategory_list));
 
             List<SearchEntry> keys = new ArrayList<SearchEntry>();
             keys.add(new SearchEntry(SearchEntry.Type.STRING, "subcat", SearchEntry.Search.EQUAL, sSubcat));
@@ -254,7 +271,9 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
         }
     }
 
-    private void refreshContentList() {
+    private void refreshContentList(View dialog) {
+        final ListView listViewContent = ((ListView) dialog.findViewById(R.id.schedule_new_player_list));
+
         List<Content> contents = contentHelper.findAll();
         listViewContent.setAdapter(new ContentListAdapter(context, contents));
     }

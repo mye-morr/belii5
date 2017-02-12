@@ -78,8 +78,8 @@ public class FragmentOnTrack extends AbstractBaseFragment {
 
         final View dialog = rootView;
 
-        final ListView listView = ((ListView) rootView.findViewById(R.id.schedule_list));
-        listViewArck = ((RecyclerView) rootView.findViewById(R.id.arck_list));
+        final ListView listView = ((ListView) dialog.findViewById(R.id.schedule_list));
+        listViewArck = ((RecyclerView) dialog.findViewById(R.id.arck_list));
         listViewArckAdapter = new OnTrackRecyclerViewAdapter(context);
         ItemTouchHelper itemTouchHelper = listViewArckAdapter.getItemTouchHelper();
         itemTouchHelper.attachToRecyclerView(listViewArck);
@@ -265,7 +265,7 @@ public class FragmentOnTrack extends AbstractBaseFragment {
         final View dialog = rootView;
         final ToggleButton btnOnTrack1 = ((ToggleButton) dialog.findViewById(R.id.btnOnTrack1));
         final ToggleButton btnOnTrack2 = ((ToggleButton) dialog.findViewById(R.id.btnOnTrack2));
-        final ListView listView = ((ListView) rootView.findViewById(R.id.schedule_list));
+        final ListView listView = ((ListView) dialog.findViewById(R.id.schedule_list));
 
         List<SearchEntry> keys = new ArrayList<SearchEntry>();
         keys.add(new SearchEntry(SearchEntry.Type.STRING, "cat", SearchEntry.Search.EQUAL, "arck"));
