@@ -80,9 +80,11 @@ public class DynaArray {
             }
         }
 
+        totalWight = 0;
         for (int i = 0; i < lenInternalArray; i++) {
             InternalItem item = internalArray[i];
-            item.calWeight = item.originalWeight;
+            item.calWeight = item.originalWeight * item.contributingArray.weight;
+            totalWight += item.calWeight;
         }
         return getRandomElement();
     }
