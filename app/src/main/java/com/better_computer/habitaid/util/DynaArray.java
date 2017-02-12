@@ -9,16 +9,18 @@ import java.util.Random;
 
 import com.better_computer.habitaid.data.core.Content;
 
-/**
- * Created by tedwei on 10/14/16.
- * Version 0.3
- */
 public class DynaArray {
 
     private InternalItem[] internalArray = {};
     private int lenInternalArray = 0;
     private double totalWight = 0;
     private Random rand = new Random();
+
+    public void init() {
+        this.internalArray = new InternalItem[] {};
+        lenInternalArray = 0;
+        double totalWight = 0;
+    }
 
     private static class ContributingArray {
         List<Content> array;
@@ -51,7 +53,14 @@ public class DynaArray {
 
     public String getRandomElement() {
         if (lenInternalArray == 0) {
-            return null;
+
+            // restart process by restoring weights
+            for(InternalItem ii : internalArray) {
+                ii.calWeight = ii.originalWeight;
+            }
+
+            // restore length of array
+            lenInternalArray = internalArray.length;
         }
 
         double dRand = rand.nextDouble();
@@ -66,13 +75,12 @@ public class DynaArray {
                 String sResult = (String) item.name;
 
                 // apply percentExtinquish
-                double newWeight = item.calWeight * item.contributingArray.percentExtinguish;
+                double newWeight = item.calWeight * (1 - item.contributingArray.percentExtinguish);
 
                 if (newWeight < item.contributingArray.removeBoundary) {
                     // swap item to the last to simulate remove
                     swapWithLastItem(i);
                 } else {
-                    //!!! this looks wrong!!
                     totalWight -= (item.calWeight - newWeight);
                     // assign new cal weight
                     item.calWeight = newWeight;
@@ -85,16 +93,6 @@ public class DynaArray {
         return null;
     }
 
-    /*
-    public Object[] currentStringArray() {
-        Object[] result = new Object[lenInternalArray];
-        for (int i = 0 ; i < lenInternalArray ; i++) {
-            InternalItem item = internalArray[i];
-            result[i] = new Object[]{item.name, item.originalWeight};
-        }
-        return result;
-    }
-    */
     public String[] currentStringArray() {
         String[] result = new String[lenInternalArray];
         for (int i = 0 ; i < lenInternalArray ; i++) {
@@ -113,7 +111,6 @@ public class DynaArray {
         return result;
     }
 
-    //public void addContributingArray(Object[][] array, int weight, String arrayId, double percentExtinguish, double percentRemove) {
     public void addContributingArray(List<Content> listContent, String arrayId, int weight, double percentExtinguish, double percentRemove) {
         ContributingArray contributingArray = new ContributingArray();
         contributingArray.array = listContent;
@@ -121,7 +118,6 @@ public class DynaArray {
         contributingArray.arrayId = arrayId;
         contributingArray.percentExtinguish = percentExtinguish;
         contributingArray.percentRemove = percentRemove;
-        contributingArray.removeBoundary = 0;
 
         InternalItem[] tempInternalArray = new InternalItem[listContent.size()];
         for (int i=0 ; i<tempInternalArray.length ; i++) {
@@ -135,10 +131,8 @@ public class DynaArray {
             item.originalWeight = (double) content.getWeight();
             item.calWeight = item.originalWeight * item.contributingArray.weight;
             totalWight += item.calWeight;
-            contributingArray.removeBoundary += item.calWeight;
         }
-        contributingArray.removeBoundary *= contributingArray.weight;
-        contributingArray.removeBoundary *= contributingArray.percentRemove;
+        contributingArray.removeBoundary = totalWight * contributingArray.percentRemove;
         internalArray = concat(internalArray, lenInternalArray, tempInternalArray, tempInternalArray.length);
         lenInternalArray = internalArray.length;
     }
@@ -228,43 +222,97 @@ public class DynaArray {
     public static void main(String[] args) {
         System.out.println("Test");
 
-        Object[][] array1 = {{"aaa", 0.1}, {"bbb", 0.4}, {"ccc", 0.5}};
-        Object[][] array2 = {{"xxx", 0.2}, {"yyy", 0.3}, {"zzz", 0.5}};
-        Object[][] array3 = {{"111", 0.1}, {"222", 0.4}, {"333", 0.1}};
+        //Object[][] array1 = {{"aaa", 0.1}, {"bbb", 0.4}, {"ccc", 0.5}};
+        //Object[][] array2 = {{"xxx", 0.2}, {"yyy", 0.3}, {"zzz", 0.5}};
+        //Object[][] array3 = {{"111", 0.1}, {"222", 0.4}, {"333", 0.1}};
 
         DynaArray dynaArray = new DynaArray();
-//        dynaArray.addContributingArray(array1, 3, "ID1", 0.5, 0.01);
-//        dynaArray.addContributingArray(array2, 5, "ID2", 0.6, 0.05);
-        dynaArray.currentStringArray();
 
-        String a = dynaArray.getRandomElement();
-        System.out.print("a = " + a + "\n");
+        List<Content> listContent1 = new ArrayList<Content>();
 
-        String b = dynaArray.getRandomElement();
-        System.out.print("b = " + b + "\n");
+        Content c1_1 = new Content();
+        c1_1.setPlayerid("1");
+        c1_1.setWeight(1);
+        c1_1.setContent("aaa");
 
-        String c = dynaArray.getRandomElement();
-        System.out.print("c = " + c + "\n");
+        Content c1_2 = new Content();
+        c1_2.setPlayerid("1");
+        c1_2.setWeight(4);
+        c1_2.setContent("bbb");
+
+        Content c1_3 = new Content();
+        c1_3.setPlayerid("1");
+        c1_3.setWeight(5);
+        c1_3.setContent("ccc");
+
+        listContent1.add(c1_1);
+        listContent1.add(c1_2);
+        listContent1.add(c1_3);
+
+        dynaArray.addContributingArray(listContent1, "ID1", 3, 0.5, 0.01);
+
+        List<Content> listContent2 = new ArrayList<Content>();
+
+        Content c2_1 = new Content();
+        c2_1.setPlayerid("1");
+        c2_1.setWeight(2);
+        c2_1.setContent("xxx");
+
+        Content c2_2 = new Content();
+        c2_2.setPlayerid("1");
+        c2_2.setWeight(3);
+        c2_2.setContent("yyy");
+
+        Content c2_3 = new Content();
+        c2_3.setPlayerid("1");
+        c2_3.setWeight(5);
+        c2_3.setContent("zzz");
+
+        listContent2.add(c2_1);
+        listContent2.add(c2_2);
+        listContent2.add(c2_3);
+
+        dynaArray.addContributingArray(listContent2, "ID2", 5, 0.5, 0.01);
+
+        //dynaArray.addContributingArray(array2, 5, "ID2", 0.6, 0.05);
+        String[] foo;
+        foo = dynaArray.currentStringArray();
+
+        String o1 = dynaArray.getRandomElement();
+        System.out.print("1: " + o1 + "\n");
+
+        String o2 = dynaArray.getRandomElement();
+        System.out.print("2: " + o2 + "\n");
+
+        String o3 = dynaArray.getRandomElement();
+        System.out.print("3: " + o3 + "\n");
 
 //        dynaArray.addContributingArray(array3, 6, "ID3", 0.7, 0.1);
 
-        String d = dynaArray.getRandomElement();
-        System.out.print("d = " + d + "\n");
+        String o4 = dynaArray.getRandomElement();
+        System.out.print("4: " + o4 + "\n");
 
-        dynaArray.getRandomElement();
-        dynaArray.getRandomElement();
-        dynaArray.getRandomElement();
-        dynaArray.getRandomElement();
-        dynaArray.getRandomElement();
+        String o5 = dynaArray.getRandomElement();
+        System.out.print("5: " + o5 + "\n");
+
+        String o6 = dynaArray.getRandomElement();
+        System.out.print("6: " + o6 + "\n");
+
+        String o7 = dynaArray.getRandomElement();
+        System.out.print("7: " + o7 + "\n");
+
+        String o8 = dynaArray.getRandomElement();
+        System.out.print("8: " + o8 + "\n");
+
+        String o9 = dynaArray.getRandomElement();
+        System.out.print("9: " + o9 + "\n");
 
         dynaArray.removeContributingArray("ID2");
 
-        dynaArray.currentStringArray();
+        foo = dynaArray.currentStringArray();
 
         dynaArray.removeArrayItem("111");
 
         dynaArray.removeContributingArrayStartWith("ID");
-
     }
-
 }

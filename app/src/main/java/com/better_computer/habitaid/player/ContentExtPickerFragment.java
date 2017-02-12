@@ -64,8 +64,8 @@ public class ContentExtPickerFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 int wt = wtView.getProgress() + 1;
-                double extpct = (extpctView.getProgress() + 1) / 10;
-                double extthr = (extthrView.getProgress() + 1) / 10;
+                double extpct = (extpctView.getProgress() + 1) / 10.0;
+                double extthr = (extthrView.getProgress() + 1) / 10.0;
 
                 if (listener != null) {
                     listener.onValueSet(wt, extpct, extthr);

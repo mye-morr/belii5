@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.better_computer.habitaid.MainActivity;
 import com.better_computer.habitaid.R;
 import com.better_computer.habitaid.data.DatabaseHelper;
 import com.better_computer.habitaid.data.core.Content;
@@ -56,13 +57,14 @@ public class ContentListAdapter extends ArrayAdapter<Content> {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if ("inactive".equals(content.get_state())) {
-                    content.set_state("active");
-                } else {
+                //!!! implementation problem for inactive -> active
+                if ("active".equals(content.get_state())) {
                     content.set_state("inactive");
+                    ((MainActivity) context).dynaArray.removeArrayItem(content.getContent());
+
+                    contentHelper.update(content);
+                    refreshView(convertView, content);
                 }
-                contentHelper.update(content);
-                refreshView(convertView, content);
             }
         });
     }

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -19,17 +20,22 @@ import com.better_computer.habitaid.data.SearchEntry;
 import com.better_computer.habitaid.data.core.Content;
 import com.better_computer.habitaid.data.core.ContentHelper;
 import com.better_computer.habitaid.data.core.NonSched;
+import com.better_computer.habitaid.data.core.NonSchedHelper;
 import com.better_computer.habitaid.data.core.Player;
 import com.better_computer.habitaid.data.core.PlayerHelper;
+import com.better_computer.habitaid.data.core.Schedule;
+import com.better_computer.habitaid.data.core.ScheduleHelper;
 import com.better_computer.habitaid.form.schedule.ContentListAdapter;
 import com.better_computer.habitaid.form.schedule.NonSchedListAdapter;
 import com.better_computer.habitaid.player.ContentExtPickerFragment;
 import com.better_computer.habitaid.player.PlayerNamePickerFragment;
 import com.better_computer.habitaid.service.PlayerService;
 import com.better_computer.habitaid.service.PlayerServiceStatic;
+import com.better_computer.habitaid.util.DynaArray;
 import com.better_computer.habitaid.util.PlayerTask;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class FragmentNewPlayer extends AbstractBaseFragment {
@@ -129,6 +135,11 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
                                     }
                                     nsPlayer.set_state("active");
                                     playerHelper.update(nsPlayer);
+
+                                    ((MainActivity) context).dynaArray.addContributingArray(
+                                            contentHelper.findBy("playerid",nsPlayer.get_id()),
+                                            nsPlayer.getName(), wt, extpct, extthr);
+
                                     refreshItemList();
                                     refreshContentList();
                                 }
@@ -139,6 +150,10 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
                             nsPlayer.set_state("inactive");
                             playerHelper.update(nsPlayer);
                             contentHelper.deleteByPlayerId(nsPlayer.get_id());
+
+                            ((MainActivity) context).dynaArray.removeContributingArray(
+                                    nsPlayer.get_id());
+
                             refreshItemList();
                             refreshContentList();
                         }
@@ -160,13 +175,29 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
         btnStart.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
-                List<Content> listContent = contentHelper.findAll();
-                ((MainActivity) context).dynaArray.addContributingArray(listContent, "a", 1, 0.05, 0.05);
 
-                PlayerService.startService(context, "SUPER");
+                AlertDialog.Builder inputInterval = new AlertDialog.Builder(context);
+                inputInterval.setTitle("Interval");
+                inputInterval.setMessage("Minutes; varia");
+                final EditText input = new EditText(context);
+                input.setText("3");
+                inputInterval.setView(input);
 
-//                objCurPlayerTask = new PlayerTask(context, dynaArray.currentStringArray(), "SUPER");
-//                objCurPlayerTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                inputInterval.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        PlayerService.startService(context, input.getText().toString());
+                    }
+                });
+                inputInterval.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                inputInterval.show();
             }
         });
 
@@ -174,8 +205,8 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
         btnStop.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
-
                 PlayerService.stopService(context);
+                ((MainActivity) context).dynaArray.init();
 
                 Toast.makeText(context, "thanks for playing", Toast.LENGTH_SHORT).show();
             }

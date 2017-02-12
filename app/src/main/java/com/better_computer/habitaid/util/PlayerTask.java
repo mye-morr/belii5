@@ -16,23 +16,7 @@ public class PlayerTask extends AsyncTask<Void, Void, Integer> {
 
     public PlayerTask(Context context, DynaArray dynaArray, String sRate) {
 
-        switch(sRate) {
-            case "SUPER":
-                this.iMinBreak = 1;
-                break;
-            case "HIGH":
-                this.iMinBreak = 2;
-                break;
-            case "MEDIUM":
-                this.iMinBreak = 3;
-                break;
-            case "LOW":
-                this.iMinBreak = 4;
-                break;
-            default:
-                this.iMinBreak = 2;
-                break;
-        }
+        this.iMinBreak = Integer.parseInt(sRate);
 
         this.context = context;
         this.dynaArray = dynaArray;
