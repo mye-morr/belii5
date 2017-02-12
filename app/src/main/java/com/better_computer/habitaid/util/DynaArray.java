@@ -3,6 +3,7 @@ package com.better_computer.habitaid.util;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -24,11 +25,13 @@ public class DynaArray {
 
     private static class ContributingArray {
         List<Content> array;
-        int weight;
         String arrayId;
-        double percentExtinguish;
-        double percentRemove;
-        double removeBoundary;
+        int weight;
+        int numRepeats;
+        int len;
+        double wtAvg;
+        double wtExtinguish;
+        double wtRemove;
     }
 
     public static class InternalItem {
@@ -65,12 +68,12 @@ public class DynaArray {
             InternalItem item = internalArray[i];
             fSum += (double) item.calWeight;
             if(dRand < fSum
-                    && item.calWeight > item.contributingArray.removeBoundary) {
+                    && item.calWeight >= item.contributingArray.wtRemove) {
 
                 String sResult = (String) item.name;
 
-                // apply percentExtinquish
-                double newWeight = item.calWeight * (1 - item.contributingArray.percentExtinguish);
+                // apply wtExtinguish
+                double newWeight = item.calWeight - item.contributingArray.wtExtinguish;
                 totalWight -= (item.calWeight - newWeight);
                 // assign new cal weight
                 item.calWeight = newWeight;
@@ -109,18 +112,19 @@ public class DynaArray {
         return result;
     }
 
-    public void addContributingArray(List<Content> listContent, String arrayId, int weight, double percentExtinguish, double percentRemove) {
+    public void addContributingArray(List<Content> listContent, String arrayId, int weight, int numRepeats) {
         ContributingArray contributingArray = new ContributingArray();
         contributingArray.array = listContent;
-        contributingArray.weight = weight;
         contributingArray.arrayId = arrayId;
-        contributingArray.percentExtinguish = percentExtinguish;
-        contributingArray.percentRemove = percentRemove;
+        contributingArray.weight = weight;
+        contributingArray.numRepeats = numRepeats;
 
         int iTotWeightArray = 0;
 
-        InternalItem[] tempInternalArray = new InternalItem[listContent.size()];
-        for (int i=0 ; i<tempInternalArray.length ; i++) {
+        int lenContent = listContent.size();
+        InternalItem[] tempInternalArray = new InternalItem[lenContent];
+
+        for (int i=0 ; i<lenContent ; i++) {
             Content content = listContent.get(i);
             InternalItem item = new InternalItem();
             item.contributingArray = contributingArray;
@@ -133,7 +137,12 @@ public class DynaArray {
             iTotWeightArray += item.calWeight;
         }
 
-        contributingArray.removeBoundary = iTotWeightArray * contributingArray.percentRemove;
+        contributingArray.len = lenContent;
+        double dWtAvg = iTotWeightArray / (1.0 * lenContent);
+        contributingArray.wtAvg = dWtAvg;
+        contributingArray.wtExtinguish = dWtAvg / (lenContent + 1);
+        contributingArray.wtRemove = dWtAvg / numRepeats;
+
         totalWight += iTotWeightArray;
         internalArray = concat(internalArray, lenInternalArray, tempInternalArray, tempInternalArray.length);
         lenInternalArray = internalArray.length;
@@ -193,14 +202,54 @@ public class DynaArray {
             InternalItem item = internalArray[i];
             if (item.name.equals(itemName)) {
 
-                // if item removed, remove its contribution to extinguish threshold
-                item.contributingArray.removeBoundary -= item.originalWeight * item.contributingArray.weight * item.contributingArray.percentRemove;
+                // weighted average was sigma product weights / len
+
+                // if item removed, modify contributing array
+                item.contributingArray.wtAvg =
+                        ((item.contributingArray.wtAvg * item.contributingArray.len)
+                        - item.originalWeight * item.contributingArray.weight) / (item.contributingArray.len - 1);
+
+                item.contributingArray.len--;
+
+                item.contributingArray.wtExtinguish =
+                        item.contributingArray.wtAvg / (item.contributingArray.len + 1);
+
+                item.contributingArray.wtRemove =
+                        item.contributingArray.wtAvg / item.contributingArray.numRepeats;
 
                 swapWithLastItem(i);
             } else {
                 i++;
             }
         }
+    }
+
+    public String sItemDetails(String itemName) {
+        String sRet = "";
+        DecimalFormat df = new DecimalFormat("#.##");
+
+        int i = 0;
+        while (i < lenInternalArray) {
+            InternalItem item = internalArray[i];
+            if (item.name.equals(itemName)) {
+                sRet = "len: " + item.contributingArray.len
+                        + "\n" + "wt: " + item.contributingArray.weight
+                        + "\n" + "wtavg: " + item.contributingArray.wtAvg
+                        + "\n" + "wtext: " + item.contributingArray.wtExtinguish
+                        + "\n" + "wtthr: " + df.format(item.contributingArray.wtRemove)
+                        + "\n" + "itemOrigWeight: " + item.originalWeight
+                        + "\n" + "itemCalWeight: " + df.format(item.calWeight)
+                        + "\n" + "totalWight: " + df.format(totalWight)
+                        + "\n" + "lenInternalArray: " + lenInternalArray;
+
+                return sRet;
+            }
+            else {
+                i++;
+            }
+        }
+
+        return sRet;
     }
 
     private InternalItem[] concat(InternalItem[] a, int aLen, InternalItem[] b, int bLen) {
@@ -255,7 +304,7 @@ public class DynaArray {
         listContent1.add(c1_2);
         listContent1.add(c1_3);
 
-        dynaArray.addContributingArray(listContent1, "ID1", 3, 0.5, 0.01);
+        dynaArray.addContributingArray(listContent1, "ID1", 3, 2);
 
         List<Content> listContent2 = new ArrayList<Content>();
 
@@ -278,7 +327,7 @@ public class DynaArray {
         listContent2.add(c2_2);
         listContent2.add(c2_3);
 
-        dynaArray.addContributingArray(listContent2, "ID2", 5, 0.5, 0.01);
+        dynaArray.addContributingArray(listContent2, "ID2", 5, 1);
 
         //dynaArray.addContributingArray(array2, 5, "ID2", 0.6, 0.05);
         String[] foo;

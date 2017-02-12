@@ -69,6 +69,7 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
 
         final ListView listViewSubcat = ((ListView) dialog.findViewById(R.id.schedule_category_list));
         final ListView listViewItems = ((ListView) dialog.findViewById(R.id.schedule_subcategory_list));
+        final ListView listViewContent = ((ListView) dialog.findViewById(R.id.schedule_new_player_list));
 
         listViewSubcat.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -111,10 +112,9 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
                             ContentExtPickerFragment fragment = ContentExtPickerFragment.newInstance();
                             fragment.setListener(new ContentExtPickerFragment.Listener() {
                                 @Override
-                                public void onValueSet(int wt, double extpct, double extthr) {
+                                public void onValueSet(int wt, int numRepeats) {
                                     nsPlayer.setWt(wt);
-                                    nsPlayer.setExtpct(extpct);
-                                    nsPlayer.setExtthr(extthr);
+                                    nsPlayer.setNumRepeats(numRepeats);
 
                                     String playerContent = nsPlayer.getContent();
                                     String[] contentArray = playerContent.split("\n");
@@ -139,7 +139,7 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
 
                                     ((MainActivity) context).dynaArray.addContributingArray(
                                             contentHelper.findBy("playerid",nsPlayer.get_id()),
-                                            nsPlayer.get_id(), wt, extpct, extthr);
+                                            nsPlayer.get_id(), wt, numRepeats);
 
                                     refreshItemList(dialog);
                                     refreshContentList(dialog);
@@ -157,6 +157,70 @@ public class FragmentNewPlayer extends AbstractBaseFragment {
 
                             refreshItemList(dialog);
                             refreshContentList(dialog);
+                        }
+                    }
+                });
+
+                alertOptions.setCancelable(true);
+                alertOptions.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                alertOptions.show();
+            }
+        });
+
+        listViewContent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                final Content content = (Content)listViewContent.getItemAtPosition(i);
+
+                AlertDialog.Builder alertOptions = new AlertDialog.Builder(context);
+                List<String> optsList = new ArrayList<String>();
+
+                if(content.get_state().equalsIgnoreCase("active")) {
+                    optsList.add("Deactivate");
+                }
+
+                optsList.add("Show Details");
+
+                final String[] options = optsList.toArray(new String[]{});
+                alertOptions.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, android.R.id.text1, options), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (options[i].equalsIgnoreCase("DEACTIVATE")) {
+                            content.set_state("inactive");
+                            ((MainActivity) context).dynaArray.removeArrayItem(content.getContent());
+
+                            contentHelper.update(content);
+
+                            refreshItemList(dialog);
+                            refreshContentList(dialog);
+                        } else if (options[i].equalsIgnoreCase("SHOW DETAILS")) {
+
+                            AlertDialog.Builder showDetails = new AlertDialog.Builder(context);
+                            showDetails.setTitle("Show Details");
+
+                            showDetails.setMessage(
+                                ((MainActivity) context).dynaArray.sItemDetails(content.getContent())
+                            );
+
+                            showDetails.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+                            showDetails.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                            showDetails.show();
                         }
                     }
                 });

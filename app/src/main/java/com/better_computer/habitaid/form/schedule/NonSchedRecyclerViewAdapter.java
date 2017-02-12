@@ -152,11 +152,27 @@ public class NonSchedRecyclerViewAdapter extends RecyclerView.Adapter<NonSchedRe
                                         PlayerHelper playerHelper = DatabaseHelper.getInstance().getHelper(PlayerHelper.class);
                                         Player player = new Player();
                                         player.copyFromNonSched(item);
-                                        player.setSubcat(subcat);
-                                        player.setName(name);
+
+                                        if(subcat.isEmpty()) {
+                                            player.setSubcat(item.getCat());
+                                        }
+                                        else {
+                                            player.setSubcat(subcat);
+                                        }
+
+                                        if(name.isEmpty()) {
+                                            player.setName(item.getSubcat());
+                                        }
+                                        else {
+                                            player.setName(name);
+                                        }
+
                                         player.setWt(wt);
-                                        player.setExtpct(0);
-                                        player.setExtthr(0);
+
+                                        if(item.getName().length() > 0) {
+                                            player.setContent(item.getName() + " -= " + item.getContent());
+                                        }
+
                                         boolean result = playerHelper.createOrUpdateBySubcatAndName(player);
                                         if (result) {
                                             Toast.makeText(context, "Added to Player.", Toast.LENGTH_SHORT).show();
@@ -209,15 +225,11 @@ public class NonSchedRecyclerViewAdapter extends RecyclerView.Adapter<NonSchedRe
             String sLabel = "";
             String nsCat = item.getCat();
 
-            // see NewWizardDialog: DialogStep_1Step_Events
-            if(nsCat.equalsIgnoreCase("COMTAS")) {
-                sLabel = item.getName() + " -= " + item.getContent();
-            }
-            else if(nsCat.equalsIgnoreCase("PLAYER")) {
+            if(nsCat.equalsIgnoreCase("PLAYER")) {
                 sLabel = item.getName();
             }
             else {
-                sLabel = item.getContent();
+                sLabel = item.getName() + " -= " + item.getContent();
             }
 
             itemSummaryView.setText(sLabel);

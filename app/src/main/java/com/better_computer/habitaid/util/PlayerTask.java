@@ -126,7 +126,21 @@ public class PlayerTask extends AsyncTask<Void, Void, Integer> {
                     i2.putExtra("BOOL_SHOW_ANSWERS", true);
                     context.sendBroadcast(i2);
 
-                    Thread.sleep(iMinBreak * 60 * 1000);
+                    long lMinSleep = iMinBreak;
+
+                    if(iVaria > 0) {
+                        Random rand = new Random();
+
+                        int iPlusMinus = 1;
+                        if (rand.nextDouble() < 0.5) {
+                            iPlusMinus = -1;
+                        }
+
+                        lMinSleep += Math.round(iPlusMinus * rand.nextDouble() * iVaria);
+                    }
+
+                    Thread.sleep(lMinSleep * 60 * 1000);
+
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
@@ -158,6 +172,7 @@ public class PlayerTask extends AsyncTask<Void, Void, Integer> {
                     }
 
                     Thread.sleep(lMinSleep * 60 * 1000);
+
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
@@ -174,15 +189,5 @@ public class PlayerTask extends AsyncTask<Void, Void, Integer> {
 
     @Override
     protected void onPostExecute(Integer id) {
-    }
-
-    protected Integer[] genRandIdx(int iSize) {
-        List<Integer> list = new ArrayList<Integer>();
-        for (int i = 0; i < iSize; i++) {
-            list.add(i);
-        }
-
-        Collections.shuffle(list);
-        return list.toArray(new Integer[list.size()]);
     }
 }

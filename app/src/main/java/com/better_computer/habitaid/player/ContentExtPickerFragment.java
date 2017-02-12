@@ -26,13 +26,12 @@ import java.util.List;
 public class ContentExtPickerFragment extends DialogFragment {
 
     private SeekBar wtView;
-    private SeekBar extpctView;
-    private SeekBar extthrView;
+    private SeekBar numRepeatsView;
     private Listener listener;
     private List<NonSched> listPlayer;
 
     public interface Listener {
-        void onValueSet(int wt, double extpct, double extthr);
+        void onValueSet(int wt, int numRepeats);
     }
 
     public static ContentExtPickerFragment newInstance() {
@@ -50,8 +49,7 @@ public class ContentExtPickerFragment extends DialogFragment {
         View rootView =  inflater.inflate(R.layout.fragment_content_ext_dialog, container, false);
 
         wtView = (SeekBar) rootView.findViewById(R.id.wt);
-        extpctView = (SeekBar) rootView.findViewById(R.id.extpct);
-        extthrView = (SeekBar) rootView.findViewById(R.id.extthr);
+        numRepeatsView = (SeekBar) rootView.findViewById(R.id.numRepeats);
 
         rootView.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,11 +62,10 @@ public class ContentExtPickerFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 int wt = wtView.getProgress() + 1;
-                double extpct = (extpctView.getProgress() + 1) / 10.0;
-                double extthr = (extthrView.getProgress() + 1) / 10.0;
+                int numRepeats = numRepeatsView.getProgress() + 1;
 
                 if (listener != null) {
-                    listener.onValueSet(wt, extpct, extthr);
+                    listener.onValueSet(wt, numRepeats);
                 }
 
                 dismiss();

@@ -13,6 +13,7 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.better_computer.habitaid.MainActivity;
 import com.better_computer.habitaid.R;
 import com.better_computer.habitaid.data.DatabaseHelper;
 import com.better_computer.habitaid.data.SearchEntry;
@@ -72,10 +73,12 @@ public class PlayerNamePickerFragment extends DialogFragment {
                 String name = nameView.getText().toString();
                 int wt = wtView.getProgress() + 1;
 
+                /*
                 if (subcat.isEmpty() || name.isEmpty()) {
                     Toast.makeText(getActivity(), "Subcat or Name can not be empty.", Toast.LENGTH_SHORT);
                     return;
                 }
+                */
 
                 if (listener != null) {
                     listener.onValueSet(subcat, name, wt);

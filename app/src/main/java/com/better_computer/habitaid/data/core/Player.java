@@ -7,15 +7,13 @@ import java.util.Map;
 public class Player extends NonSched {
 
     private int wt = 0;
-    private double extpct = 0.0;
-    private double extthr = 0.0;
+    private int numrepeats = 0;
 
     public ContentValues getContentValues() {
         ContentValues contentValues = super.getContentValues();
 
         contentValues.put("wt", wt);
-        contentValues.put("extpct", extpct);
-        contentValues.put("extthr", extthr);
+        contentValues.put("numrepeats", numrepeats);
 
         return contentValues;
     }
@@ -25,8 +23,7 @@ public class Player extends NonSched {
         super.populateWith(data);
 
         wt = fetchDataInteger(data, "wt");
-        extpct = fetchDataDouble(data, "extpct");
-        extthr = fetchDataDouble(data, "extthr");
+        numrepeats = fetchDataInteger(data, "numrepeats");
     }
 
     public void copyFromNonSched(NonSched input) {
@@ -44,12 +41,7 @@ public class Player extends NonSched {
 
     public void setWt(int wt) { this.wt = wt; }
 
-    public double getExtpct() { return extpct; }
+    public int getNumRepeats() { return numrepeats; }
 
-    public void setExtpct(double extpct) { this.extpct = extpct; }
-
-    public double getExtthr() { return extthr; }
-
-    public void setExtthr(double extthr) { this.extthr = extthr; }
-
+    public void setNumRepeats(int numrepeats) { this.numrepeats = numrepeats; }
 }

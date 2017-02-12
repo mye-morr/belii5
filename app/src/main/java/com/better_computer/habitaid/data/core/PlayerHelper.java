@@ -14,9 +14,8 @@ public class PlayerHelper extends NonSchedHelper {
     public PlayerHelper(Context context) {
         super(context);
         this.tableName = "core_tbl_player";
-        this.columns.add("wt INT");
-        this.columns.add("extpct REAL");
-        this.columns.add("extthr REAL");
+        this.columns.add("wt INTEGER");
+        this.columns.add("numrepeats INTEGER");
     }
 
     @Override
