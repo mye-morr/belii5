@@ -11,8 +11,10 @@ import android.support.v4.app.Fragment;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.better_computer.habitaid.data.DatabaseHelper;
 import com.better_computer.habitaid.data.SearchEntry;
 import com.better_computer.habitaid.data.core.GamesHelper;
+import com.better_computer.habitaid.data.core.MessageHelper;
 import com.better_computer.habitaid.form.NewWizardDialog;
 
 import java.util.ArrayList;
@@ -55,7 +57,7 @@ abstract public class AbstractBaseFragment extends Fragment {
                 new NewWizardDialog(context, "contacts").show();
                 return true;
             case R.id.action_clear_history:
-                ((MainActivity)context).getHistoryPopulator().setupClearHistory();
+                clearHistory();
                 return true;
             case R.id.action_clear_games:
                 clearGames();
@@ -112,4 +114,32 @@ abstract public class AbstractBaseFragment extends Fragment {
         });
         builder.show();
     }
+
+    public void clearHistory(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Clear sent message history");
+        builder.setMessage("Are you sure that you want to delete the sent message history?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                MessageHelper messageHelper = DatabaseHelper.getInstance().getHelper(MessageHelper.class);
+                List<SearchEntry> keys = new ArrayList<SearchEntry>();
+                List<String> states = new ArrayList<String>();
+                states.add("sending");
+                states.add("delivered");
+                states.add("failed");
+                keys.add(new SearchEntry(SearchEntry.Type.STRING, "_state", SearchEntry.Search.IN, states));
+                messageHelper.delete(keys);
+                ((MainActivity) context).resetup();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        builder.show();
+    }
+
 }

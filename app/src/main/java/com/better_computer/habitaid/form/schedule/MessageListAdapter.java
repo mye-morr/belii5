@@ -1,4 +1,4 @@
-package com.better_computer.habitaid.form.history;
+package com.better_computer.habitaid.form.schedule;
 
 import android.content.Context;
 import android.graphics.ColorFilter;

@@ -17,7 +17,6 @@ import android.widget.ListView;
 
 import com.better_computer.habitaid.data.DatabaseHelper;
 import com.better_computer.habitaid.data.core.ContactItemHelper;
-import com.better_computer.habitaid.form.history.HistoryPopulator;
 import com.better_computer.habitaid.navigation.DrawerAdapter;
 import com.better_computer.habitaid.navigation.DrawerItem;
 import com.better_computer.habitaid.scheduler.SchedulerService;
@@ -33,9 +32,6 @@ public class MainActivity extends AppCompatActivity {
     private CharSequence mTitle;
     android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
 
-    //populators
-    private HistoryPopulator historyPopulator;
-
     public String sSelectedLibraryCat = "";
     public String sSelectedLibrarySubcat = "";
     public String sSelectedContactsSubcat = "";
@@ -46,10 +42,6 @@ public class MainActivity extends AppCompatActivity {
     public DynaArray dynaArray = null;
 
     private int iLastPosition = 0;
-
-    public HistoryPopulator getHistoryPopulator() {
-        return historyPopulator;
-    }
 
     private boolean isServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -76,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         dynaArray = ((MyApplication)getApplication()).getDynaArray();
-        historyPopulator = new HistoryPopulator(this);
 
         DatabaseHelper.getInstance().getHelper(ContactItemHelper.class).fetchAndUpdate();
 
