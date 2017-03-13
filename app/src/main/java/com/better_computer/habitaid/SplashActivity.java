@@ -17,7 +17,8 @@ public class SplashActivity extends Activity {
     private static final int MY_PERMISSIONS_REQUEST = 100;
     private static final String[] allRequestedPermissions = new String[] {
             Manifest.permission.READ_CONTACTS,
-            Manifest.permission.SEND_SMS
+            Manifest.permission.SEND_SMS,
+            Manifest.permission.CALL_PHONE
     };
 
     @Override
