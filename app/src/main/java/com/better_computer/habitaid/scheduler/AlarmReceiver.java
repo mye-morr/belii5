@@ -1,14 +1,17 @@
 package com.better_computer.habitaid.scheduler;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.PowerManager;
+import android.support.v4.app.ActivityCompat;
 import android.telephony.SmsManager;
 
 import java.util.Calendar;
@@ -27,7 +30,8 @@ public class AlarmReceiver extends BroadcastReceiver {
     private static final int NOTIFY_TYPE_OK = 0;
     private static final int NOTIFY_TYPE_FAILED = 1;
 
-    public AlarmReceiver() { }
+    public AlarmReceiver() {
+    }
 
     @Override
     //m/ ALWAYS RUNNING!!!
@@ -65,11 +69,27 @@ public class AlarmReceiver extends BroadcastReceiver {
         List<Message> messages = messageHelper.getMessagesFromQueue();
         for (int i = 0; i < messages.size(); i++) {
             Message message = messages.get(i);
-            sendMessage(context, message);
+            String strMessage = message.getMessage();
+            if (strMessage.contains("make phone call")) {
+                makeCall(context, message);
+            } else {
+                sendMessage(context, message);
+            }
             messageHelper.markAsSending(message);
         }
 
         wl.release();
+    }
+
+    private void makeCall(Context context, Message message) {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        callIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        callIntent.setData(Uri.parse("tel:" + message.getReceiverString()));
+        context.startActivity(callIntent);
     }
 
     //m/ this is the meat and potatoes
